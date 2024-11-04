@@ -3,5 +3,8 @@
 ## Ideas
 - Hearts Game
     - Hearts as normal
-    - Each Card has a rule change. Card that wins trick tweaks rules for the next hand
-    - Each player has "quest cards" that they have to complete to get extra points
+    - Each round there is X cards in the center. They modify the rules to that round
+        - "All 2's are cancelled out"
+        - "All cards are considered hearts"
+        - "Spades are the trump suit this round"
+    - Possible individual quest cards
