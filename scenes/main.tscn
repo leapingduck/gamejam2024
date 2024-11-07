@@ -1,58 +1,173 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4yws1b6launf"]
+[gd_scene load_steps=5 format=3 uid="uid://c4yws1b6launf"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_q66b3"]
 [ext_resource type="Script" path="res://scripts/Hand.cs" id="2_hwog3"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_8sp50"]
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_84wye"]
+font_size = 48
+
 [node name="Game" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 440.832
-offset_bottom = 19.8719
+offset_right = 1920.0
+offset_bottom = 1080.0
 script = ExtResource("1_q66b3")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.148827, 0.180668, 0.0739745, 1)
 
-[node name="Draw" type="Button" parent="."]
-offset_left = 29.0
-offset_top = 23.0
-offset_right = 202.0
-offset_bottom = 98.0
-text = "Draw"
-
-[node name="Discard" type="Button" parent="."]
-offset_left = 29.0
-offset_top = 113.0
-offset_right = 202.0
-offset_bottom = 188.0
-text = "Discard"
-
-[node name="Reset" type="Button" parent="."]
-offset_left = 29.0
-offset_top = 212.0
-offset_right = 202.0
-offset_bottom = 287.0
-text = "Reset"
-
 [node name="Hand" type="Node" parent="."]
 script = ExtResource("2_hwog3")
 
-[node name="ColorRect2" type="ColorRect" parent="Hand"]
+[node name="Player1Hand" type="ColorRect" parent="Hand"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -760.0
-offset_top = -338.0
+offset_top = -325.0
 offset_right = 760.0
-offset_bottom = -63.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
-[connection signal="pressed" from="Draw" to="." method="OnDrawCardButtonPressed"]
-[connection signal="pressed" from="Discard" to="." method="OnDiscardCardButtonPressed"]
-[connection signal="pressed" from="Reset" to="." method="OnResetButtonPressed"]
+[node name="Label" type="Label" parent="Hand/Player1Hand"]
+layout_mode = 0
+offset_right = 1519.0
+offset_bottom = 274.0
+text = "Main Player Hand"
+label_settings = SubResource("LabelSettings_8sp50")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player2Hand" type="ColorRect" parent="Hand"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -681.0
+offset_top = 80.0
+offset_right = -62.0
+offset_bottom = 286.0
+grow_horizontal = 2
+rotation = 1.5708
+color = Color(0.237539, 0.237539, 0.237539, 1)
+
+[node name="Label" type="Label" parent="Hand/Player2Hand"]
+offset_right = 619.0
+offset_bottom = 206.0
+text = "Player 2 Hand"
+label_settings = SubResource("LabelSettings_8sp50")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player3Hand" type="ColorRect" parent="Hand"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -309.5
+offset_top = 49.0
+offset_right = 309.5
+offset_bottom = 255.0
+grow_horizontal = 2
+color = Color(0.237539, 0.237539, 0.237539, 1)
+
+[node name="Label" type="Label" parent="Hand/Player3Hand"]
+offset_right = 619.0
+offset_bottom = 206.0
+text = "Player 2 Hand
+"
+label_settings = SubResource("LabelSettings_8sp50")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player4Hand" type="ColorRect" parent="Hand"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 875.0
+offset_top = 80.0
+offset_right = 1494.0
+offset_bottom = 286.0
+grow_horizontal = 2
+rotation = 1.5708
+color = Color(0.237539, 0.237539, 0.237539, 1)
+
+[node name="Label" type="Label" parent="Hand/Player4Hand"]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 206.0
+offset_right = 1236.0
+offset_bottom = 412.0
+rotation = 3.14159
+text = "Player 4 Hand"
+label_settings = SubResource("LabelSettings_8sp50")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Temp" type="Node" parent="."]
+
+[node name="Draw" type="Button" parent="Temp"]
+offset_left = 388.0
+offset_top = 406.0
+offset_right = 561.0
+offset_bottom = 481.0
+text = "Draw"
+
+[node name="Discard" type="Button" parent="Temp"]
+offset_left = 388.0
+offset_top = 496.0
+offset_right = 561.0
+offset_bottom = 571.0
+text = "Discard"
+
+[node name="Reset" type="Button" parent="Temp"]
+offset_left = 388.0
+offset_top = 595.0
+offset_right = 561.0
+offset_bottom = 670.0
+text = "Reset"
+
+[node name="Modifier Cards" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -98.5
+offset_right = 310.0
+offset_bottom = 98.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.257915, 0.227287, 0.566944, 1)
+
+[node name="Label" type="Label" parent="Modifier Cards"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.5
+offset_top = -98.0
+offset_right = 310.5
+offset_bottom = 98.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Modifier Cards"
+label_settings = SubResource("LabelSettings_84wye")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Temp/Draw" to="." method="OnDrawCardButtonPressed"]
+[connection signal="pressed" from="Temp/Discard" to="." method="OnDiscardCardButtonPressed"]
+[connection signal="pressed" from="Temp/Reset" to="." method="OnResetButtonPressed"]
