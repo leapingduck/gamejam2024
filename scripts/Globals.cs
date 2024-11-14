@@ -3,10 +3,10 @@ using System;
  
 public enum Suit
 {
+	Clubs = 1,
 	Hearts,
-	Diamonds,
-	Clubs,
-	Spades
+	Spades,
+	Diamonds
 }
 
 public enum Rank

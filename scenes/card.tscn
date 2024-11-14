@@ -1,24 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://bupmc71r523el"]
+[gd_scene load_steps=4 format=3 uid="uid://2iypfeapj0l2"]
 
-[ext_resource type="Script" path="res://scenes/Card.cs" id="1_anp23"]
-[ext_resource type="Texture2D" uid="uid://dypnkehl02n76" path="res://assets/PlayingCards 256x356.png" id="2_nyx6h"]
-[ext_resource type="Texture2D" uid="uid://hblu5xbcssa" path="res://assets/Card Backs 356x256.png" id="3_04gqn"]
+[ext_resource type="Texture2D" uid="uid://dypnkehl02n76" path="res://assets/PlayingCards 256x356.png" id="1_7rod2"]
+[ext_resource type="Script" path="res://scripts/Card.cs" id="1_8nmmr"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qrukd"]
-size = Vector2(264, 348)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fa1ef"]
+size = Vector2(255, 356)
 
-[node name="Card" type="CharacterBody2D"]
-script = ExtResource("1_anp23")
+[node name="Card" type="Node2D"]
+script = ExtResource("1_8nmmr")
 
-[node name="CardFaceImage" type="Sprite2D" parent="."]
-texture = ExtResource("2_nyx6h")
+[node name="CardFace" type="Sprite2D" parent="."]
+texture = ExtResource("1_7rod2")
 region_enabled = true
 region_rect = Rect2(0, 0, 256, 356)
 
-[node name="CardBackImage" type="Sprite2D" parent="."]
-texture = ExtResource("3_04gqn")
-region_enabled = true
-region_rect = Rect2(0, 0, 256, 356)
+[node name="Area2D" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_qrukd")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_fa1ef")
+
+[connection signal="mouse_entered" from="Area2D" to="." method="MouseEnter"]
+[connection signal="mouse_exited" from="Area2D" to="." method="MouseExit"]
