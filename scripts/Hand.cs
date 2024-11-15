@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -27,10 +28,19 @@ public partial class Hand : Node2D
 		
 		deck = GetParent().GetNode<Deck>("Deck");
 		
+		RotationCurve = new Curve();
+		RotationCurve.AddPoint(new Vector2(0, -30)); // Left-most card
+		RotationCurve.AddPoint(new Vector2(0.5f, 0)); // Middle card
+		RotationCurve.AddPoint(new Vector2(1, 30)); // Right-most card
+
+
 		for (int i = 0; i < HAND_COUNT; i++)
 		{
 			DrawCard();
 		}
+
+		UpdateHandPosition();
+		
 		// Called every time the node is added to the scene.
 		// Initialization here
 	}
@@ -49,11 +59,19 @@ public partial class Hand : Node2D
 	}
 
 	private void CalculateCardPosition(int index){
-		float t = (float)index / (HAND_COUNT - 1);
-		float x = HandCurve.Sample(t) * centerScreenX;
-		float y = YMin + RotationCurve.Sample(t) * YMax;
-		float rotation = MaxRotationDegrees * RotationCurve.Sample(t);
-		AnimateCardPosition(index, new Vector2(x, y), rotation);
+		
+		float t = Cards.Count == 1 ? 0.5f : (float)index / (Cards.Count - 1); // Normalized value between 0 and 1
+		float rotation = RotationCurve.Sample(t);
+		float spacing = 100.0f;
+		
+		Vector2 handCenter = GlobalPosition; 
+		
+		float offsetX = spacing * index - (spacing * (Cards.Count - 1) / 2);
+		Console.WriteLine($"Rotation: {rotation}");
+    	float offsetY = Mathf.Abs(rotation * 1.25f);
+		Console.WriteLine($"OffsetY: {offsetY}");
+
+		AnimateCardPosition(index, handCenter + new Vector2(offsetX, offsetY), rotation);
 	}
 
 	private void AnimateCardPosition(int index, Vector2 targetPosition, float targetRotation){
