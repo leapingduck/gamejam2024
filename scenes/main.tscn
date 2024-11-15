@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4yws1b6launf"]
+[gd_scene load_steps=7 format=3 uid="uid://c4yws1b6launf"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_q66b3"]
 [ext_resource type="Script" path="res://scripts/Hand.cs" id="2_hwog3"]
+[ext_resource type="PackedScene" uid="uid://ccixinbs2bmm7" path="res://scenes/CardManager.tscn" id="2_xso4x"]
+[ext_resource type="PackedScene" uid="uid://ceqn6hklk73d" path="res://scenes/Deck.tscn" id="3_ncjby"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8sp50"]
 font_size = 48
@@ -16,16 +18,21 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_q66b3")
 
+[node name="CardManager" parent="." instance=ExtResource("2_xso4x")]
+
+[node name="Deck" parent="." instance=ExtResource("3_ncjby")]
+z_index = 5
+position = Vector2(1435, 408)
+
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.148827, 0.180668, 0.0739745, 1)
+metadata/_edit_lock_ = true
 
-[node name="Hand" type="Node" parent="."]
-script = ExtResource("2_hwog3")
-
-[node name="Player1Hand" type="ColorRect" parent="Hand"]
+[node name="Player1Hand" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -38,8 +45,9 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.237539, 0.237539, 0.237539, 1)
+metadata/_edit_lock_ = true
 
-[node name="Label" type="Label" parent="Hand/Player1Hand"]
+[node name="Label" type="Label" parent="Player1Hand"]
 layout_mode = 0
 offset_right = 1519.0
 offset_bottom = 274.0
@@ -48,7 +56,8 @@ label_settings = SubResource("LabelSettings_8sp50")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Player2Hand" type="ColorRect" parent="Hand"]
+[node name="Player2Hand" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -60,7 +69,7 @@ grow_horizontal = 2
 rotation = 1.5708
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
-[node name="Label" type="Label" parent="Hand/Player2Hand"]
+[node name="Label" type="Label" parent="Player2Hand"]
 layout_mode = 0
 offset_right = 619.0
 offset_bottom = 206.0
@@ -69,7 +78,8 @@ label_settings = SubResource("LabelSettings_8sp50")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Player3Hand" type="ColorRect" parent="Hand"]
+[node name="Player3Hand" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -80,7 +90,7 @@ offset_bottom = 255.0
 grow_horizontal = 2
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
-[node name="Label" type="Label" parent="Hand/Player3Hand"]
+[node name="Label" type="Label" parent="Player3Hand"]
 layout_mode = 0
 offset_right = 619.0
 offset_bottom = 206.0
@@ -90,7 +100,8 @@ label_settings = SubResource("LabelSettings_8sp50")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Player4Hand" type="ColorRect" parent="Hand"]
+[node name="Player4Hand" type="ColorRect" parent="."]
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -102,7 +113,7 @@ grow_horizontal = 2
 rotation = 1.5708
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
-[node name="Label" type="Label" parent="Hand/Player4Hand"]
+[node name="Label" type="Label" parent="Player4Hand"]
 layout_mode = 0
 offset_left = 617.0
 offset_top = 206.0
@@ -113,6 +124,10 @@ text = "Player 4 Hand"
 label_settings = SubResource("LabelSettings_8sp50")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Hand" type="Node2D" parent="."]
+position = Vector2(964, 892)
+script = ExtResource("2_hwog3")
 
 [node name="Temp" type="Node" parent="."]
 

@@ -22,15 +22,23 @@ public partial class Deck : Node2D
 		foreach(Suit suit in (Suit[])Enum.GetValues(typeof(Suit))){
 			foreach(Rank rank in (Rank[])Enum.GetValues(typeof(Rank))){
 				Card card = (Card)cardScene.Instantiate();
-				
+				card.Position = GlobalPosition;
+				GetParent().GetNode<CardManager>("CardManager").AddChild(card);
+
 				Rect2 faceRegion = new Rect2((int)rank * cardWidth, (int)suit * cardHeight, cardWidth, cardHeight);
 				Rect2 backRegion = new Rect2(256, 356, cardWidth, cardHeight);
 				
 				card.Initialize(suit, rank, faceRegion, backRegion);
 				cards.Add(card);
-				AddChild(card);
 			}
 		}
+		Console.WriteLine(cards[0]);
+	}
+
+	public Card DrawCard(){
+		Card card = cards[0];
+		cards.RemoveAt(0);
+		return card;
 	}
 
 	public void ShuffleDeck(){
