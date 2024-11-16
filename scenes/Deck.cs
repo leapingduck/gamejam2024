@@ -16,8 +16,6 @@ public partial class Deck : Node2D
 	private void GenerateDeck(){
 		int cardWidth = 256;
 		int cardHeight = 356;
-		
-		Console.WriteLine("Generating deck");
 
 		foreach(Suit suit in (Suit[])Enum.GetValues(typeof(Suit))){
 			foreach(Rank rank in (Rank[])Enum.GetValues(typeof(Rank))){
@@ -32,7 +30,7 @@ public partial class Deck : Node2D
 				cards.Add(card);
 			}
 		}
-		Console.WriteLine(cards[0]);
+		
 	}
 
 	public Card DrawCard(){

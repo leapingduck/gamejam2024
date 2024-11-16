@@ -73,10 +73,21 @@ public partial class CardManager : Node2D
 	}
 
 	public void ConnectCardSignals(Card card){
+		
 		var cardArea = card.GetNode<Area2D>("Area2D");
+		
 		cardArea.MouseEntered += () => CardHovered(card);
 		cardArea.MouseExited += () => CardExited(card);
 	}
+
+	public void MouseEnter(){
+		Console.WriteLine("Mouseenter");
+	}
+
+	public void MouseExit(){
+		Console.WriteLine("Mouseexit");
+	}
+
 
 	public void CardHovered(Card card){
 		card.Scale = new Vector2(1.2f, 1.2f);

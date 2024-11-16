@@ -29,9 +29,9 @@ public partial class Hand : Node2D
 		deck = GetParent().GetNode<Deck>("Deck");
 		
 		RotationCurve = new Curve();
-		RotationCurve.AddPoint(new Vector2(0, -30)); // Left-most card
+		RotationCurve.AddPoint(new Vector2(0, -25)); // Left-most card
 		RotationCurve.AddPoint(new Vector2(0.5f, 0)); // Middle card
-		RotationCurve.AddPoint(new Vector2(1, 30)); // Right-most card
+		RotationCurve.AddPoint(new Vector2(1, 25)); // Right-most card
 
 
 		for (int i = 0; i < HAND_COUNT; i++)
@@ -62,14 +62,12 @@ public partial class Hand : Node2D
 		
 		float t = Cards.Count == 1 ? 0.5f : (float)index / (Cards.Count - 1); // Normalized value between 0 and 1
 		float rotation = RotationCurve.Sample(t);
-		float spacing = 100.0f;
+		float spacing = 150.0f;
 		
 		Vector2 handCenter = GlobalPosition; 
 		
 		float offsetX = spacing * index - (spacing * (Cards.Count - 1) / 2);
-		Console.WriteLine($"Rotation: {rotation}");
-    	float offsetY = Mathf.Abs(rotation * 1.25f);
-		Console.WriteLine($"OffsetY: {offsetY}");
+    	float offsetY = Mathf.Abs(rotation * 2.5f);
 
 		AnimateCardPosition(index, handCenter + new Vector2(offsetX, offsetY), rotation);
 	}
