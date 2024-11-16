@@ -67,7 +67,7 @@ public partial class Hand : Node2D
 		Vector2 handCenter = GlobalPosition; 
 		
 		float offsetX = spacing * index - (spacing * (Cards.Count - 1) / 2);
-    	float offsetY = Mathf.Abs(rotation * 2.5f);
+		float offsetY = Mathf.Abs(rotation * 2.5f);
 
 		AnimateCardPosition(index, handCenter + new Vector2(offsetX, offsetY), rotation);
 	}
