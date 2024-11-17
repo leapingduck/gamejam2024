@@ -39,26 +39,48 @@ public partial class Hand : Node2D
 			DrawCard();
 		}
 
-		UpdateHandPosition();
-		
 		// Called every time the node is added to the scene.
 		// Initialization here
 	}
 
 	public void DrawCard(){
 		var card = deck.DrawCard();
-		Cards.Add(card);
-		UpdateHandPosition();
+		AddCardToHand(card);
+	}
+
+	public void AddCardToHand(Card card){
+		if(card is null) return;
+		
+		if(!Cards.Contains(card)){
+			Cards.Add(card);
+			UpdateHandPosition();
+		}
+		else {
+			AnimateCardPosition(card, card.HandPosition, card.HandRotation);
+		}
 	}
 
 	public void UpdateHandPosition(){
 		for (int i = 0; i < Cards.Count; i++)
 		{
-			CalculateCardPosition(i);
+			var newPositionData = CalculateCardPosition(i);
+			var card = Cards[i];
+			
+			card.HandPosition = newPositionData.newPosition;
+			card.HandRotation = newPositionData.targetRotation;
+
+			AnimateCardPosition(card, newPositionData.newPosition, newPositionData.targetRotation);
 		}
 	}
 
-	private void CalculateCardPosition(int index){
+	public void RemoveCardFromHand(Card card){
+		if(Cards.Contains(card)){
+			Cards.Remove(card);
+			UpdateHandPosition();
+		}
+	}
+
+	private (Vector2 newPosition, float targetRotation) CalculateCardPosition(int index){
 		
 		float t = Cards.Count == 1 ? 0.5f : (float)index / (Cards.Count - 1); // Normalized value between 0 and 1
 		float rotation = RotationCurve.Sample(t);
@@ -69,11 +91,10 @@ public partial class Hand : Node2D
 		float offsetX = spacing * index - (spacing * (Cards.Count - 1) / 2);
 		float offsetY = Mathf.Abs(rotation * 2.5f);
 
-		AnimateCardPosition(index, handCenter + new Vector2(offsetX, offsetY), rotation);
+		return (handCenter + new Vector2(offsetX, offsetY), rotation);
 	}
 
-	private void AnimateCardPosition(int index, Vector2 targetPosition, float targetRotation){
-		var card = Cards[index];
+	private void AnimateCardPosition(Card card, Vector2 targetPosition, float targetRotation){
 		var tween = CreateTween();
 		
 		tween.TweenProperty(card, "position", targetPosition, 0.5f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);

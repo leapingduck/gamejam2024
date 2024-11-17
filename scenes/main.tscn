@@ -16,6 +16,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
+mouse_filter = 2
 script = ExtResource("1_q66b3")
 
 [node name="CardManager" parent="." instance=ExtResource("2_xso4x")]
@@ -24,10 +25,16 @@ script = ExtResource("1_q66b3")
 z_index = 5
 position = Vector2(1435, 408)
 
+[node name="Hand" type="Node2D" parent="."]
+z_index = 5
+position = Vector2(964, 892)
+script = ExtResource("2_hwog3")
+
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
+mouse_filter = 2
 color = Color(0.148827, 0.180668, 0.0739745, 1)
 metadata/_edit_lock_ = true
 
@@ -44,6 +51,7 @@ offset_right = 760.0
 offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 color = Color(0.237539, 0.237539, 0.237539, 1)
 metadata/_edit_lock_ = true
 
@@ -67,6 +75,7 @@ offset_right = -62.0
 offset_bottom = 286.0
 grow_horizontal = 2
 rotation = 1.5708
+mouse_filter = 2
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
 [node name="Label" type="Label" parent="Player2Hand"]
@@ -88,6 +97,7 @@ offset_top = 49.0
 offset_right = 309.5
 offset_bottom = 255.0
 grow_horizontal = 2
+mouse_filter = 2
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
 [node name="Label" type="Label" parent="Player3Hand"]
@@ -111,6 +121,7 @@ offset_right = 1494.0
 offset_bottom = 286.0
 grow_horizontal = 2
 rotation = 1.5708
+mouse_filter = 2
 color = Color(0.237539, 0.237539, 0.237539, 1)
 
 [node name="Label" type="Label" parent="Player4Hand"]
@@ -124,11 +135,6 @@ text = "Player 4 Hand"
 label_settings = SubResource("LabelSettings_8sp50")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Hand" type="Node2D" parent="."]
-z_index = 5
-position = Vector2(964, 892)
-script = ExtResource("2_hwog3")
 
 [node name="Temp" type="Node" parent="."]
 
@@ -166,6 +172,7 @@ offset_right = 310.0
 offset_bottom = 98.5
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.257915, 0.227287, 0.566944, 1)
 
 [node name="Label" type="Label" parent="Modifier Cards"]

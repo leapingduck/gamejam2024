@@ -1,11 +1,13 @@
-using Godot;
 using System;
-using System.Net.Security;
+using Godot;
 
 public partial class Card : Node2D
 {	
 	public Suit Suit { get; set; }
 	public Rank Rank { get; set; }
+
+	public Vector2 HandPosition { get; set; } 
+	public float HandRotation { get; set; }
 
  	public void Initialize(Suit suit, Rank rank, Rect2 faceRegion, Rect2 backRegion)
 	{
@@ -29,6 +31,7 @@ public partial class Card : Node2D
 
 	public void FuckOff(){
 		GD.Print("Mouseenter");
+		Console.WriteLine("Mouseenter");
 	}
   
 }

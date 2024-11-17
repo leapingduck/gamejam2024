@@ -6,11 +6,13 @@ public partial class CardManager : Node2D
 {
 
 	Rect2 ScreenSize;
-	Node2D CardBeingDragged = null;
+	Card CardBeingDragged = null;
+	Hand PlayerHand = null;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		ScreenSize = GetViewportRect();
+		PlayerHand = GetParent().GetNode<Hand>("Hand");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,13 +33,14 @@ public partial class CardManager : Node2D
 		if(@event is InputEventMouseButton mouseEvent){
 			if(mouseEvent.ButtonIndex == MouseButton.Left){
 				if(mouseEvent.Pressed){
-					var card = raycastCheckForCard();
+					var card = (Card)raycastCheckForCard();
 					if(card is not null){
-						CardBeingDragged = card;
+						StartDrag(card);
 					}
 				}
 				if(!mouseEvent.Pressed){
-					CardBeingDragged = null;
+					//TODO: if dropping then let's reset if not playable. 
+					EndDrag(CardBeingDragged);
 				}
 			}
 			/*
@@ -54,7 +57,17 @@ public partial class CardManager : Node2D
 		}
 	}
 
-	private Node2D raycastCheckForCard(){
+	private void StartDrag(Card card){
+		CardBeingDragged = card;
+
+	}
+
+	private void EndDrag(Card card){
+		PlayerHand.AddCardToHand(card);
+		CardBeingDragged = null;
+	}
+
+	private Card raycastCheckForCard(){
 		var spaceState = GetWorld2D().DirectSpaceState;
 		var parameters = new PhysicsPointQueryParameters2D(){
 			Position = GetGlobalMousePosition(),
@@ -65,7 +78,7 @@ public partial class CardManager : Node2D
 		if(result.Count > 0){
 			var cardArea = (Area2D)result[0]["collider"];
 			if(cardArea is not null){
-				var card = (Node2D)cardArea.GetParent();
+				var card = (Card)cardArea.GetParent();
 				return card;
 			}
 		}
