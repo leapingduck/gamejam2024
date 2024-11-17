@@ -20,18 +20,10 @@ public partial class Card : Node2D
 	public override void _Ready()
 	{
 		((CardManager)GetParent()).ConnectCardSignals(this);
-		var cardArea = GetNode<Area2D>("Area2D");
-		cardArea.MouseEntered += FuckOff;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
 	}
-
-	public void FuckOff(){
-		GD.Print("Mouseenter");
-		Console.WriteLine("Mouseenter");
-	}
-  
 }
