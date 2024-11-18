@@ -1,17 +1,131 @@
-[gd_scene load_steps=4 format=3 uid="uid://2iypfeapj0l2"]
+[gd_scene load_steps=8 format=3 uid="uid://2iypfeapj0l2"]
 
 [ext_resource type="Texture2D" uid="uid://dypnkehl02n76" path="res://assets/PlayingCards 256x356.png" id="1_7rod2"]
 [ext_resource type="Script" path="res://scripts/Card.cs" id="1_8nmmr"]
+[ext_resource type="Texture2D" uid="uid://hblu5xbcssa" path="res://assets/Card Backs 356x256.png" id="2_5oqpn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fa1ef"]
 size = Vector2(255, 356)
+
+[sub_resource type="Animation" id="Animation_ndh88"]
+resource_name = "card_flip"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CardBack:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.1, 1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CardBack:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CardFace:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.1, 1), Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CardFace:z_index")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 0]
+}
+
+[sub_resource type="Animation" id="Animation_viqbb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CardBack:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CardBack:z_index")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CardFace:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CardFace:z_index")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qvmng"]
+_data = {
+"RESET": SubResource("Animation_viqbb"),
+"card_flip": SubResource("Animation_ndh88")
+}
 
 [node name="Card" type="Node2D"]
 z_index = 1
 script = ExtResource("1_8nmmr")
 
+[node name="CardBack" type="Sprite2D" parent="."]
+texture = ExtResource("2_5oqpn")
+region_enabled = true
+region_rect = Rect2(0, 0, 256, 356)
+
 [node name="CardFace" type="Sprite2D" parent="."]
-z_index = 1
+z_index = -1
 texture = ExtResource("1_7rod2")
 region_enabled = true
 region_rect = Rect2(0, 0, 256, 356)
@@ -21,3 +135,8 @@ region_rect = Rect2(0, 0, 256, 356)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0.5, 1)
 shape = SubResource("RectangleShape2D_fa1ef")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qvmng")
+}

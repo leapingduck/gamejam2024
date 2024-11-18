@@ -20,6 +20,7 @@ public partial class Deck : Node2D
 		foreach(Suit suit in (Suit[])Enum.GetValues(typeof(Suit))){
 			foreach(Rank rank in (Rank[])Enum.GetValues(typeof(Rank))){
 				Card card = (Card)cardScene.Instantiate();
+				card.Name = $"{rank} of {suit}";
 				card.Position = GlobalPosition;
 				GetParent().GetNode<CardManager>("CardManager").AddChild(card);
 
@@ -37,6 +38,11 @@ public partial class Deck : Node2D
 		Card card = cards[0];
 		cards.RemoveAt(0);
 		return card;
+	}
+
+	public void DealCard(Hand hand){
+		Card card = DrawCard();
+		hand.AddCardToHand(card);
 	}
 
 	public void ShuffleDeck(){

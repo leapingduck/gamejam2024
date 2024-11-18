@@ -84,7 +84,7 @@ public partial class CardManager : Node2D
 		var parameters = new PhysicsPointQueryParameters2D(){
 			Position = GetGlobalMousePosition(),
 			CollideWithAreas = true,
-			CollisionMask = 1
+			CollisionMask = (int)CollisionMask.Card
 		};
 		var result = spaceState.IntersectPoint(parameters);
 		if(result.Count > 0){
@@ -110,7 +110,7 @@ public partial class CardManager : Node2D
 		var parameters = new PhysicsPointQueryParameters2D(){
 			Position = GetGlobalMousePosition(),
 			CollideWithAreas = true,
-			CollisionMask = 2
+			CollisionMask = (int)CollisionMask.CardSlot
 		};
 		var result = spaceState.IntersectPoint(parameters);
 		if(result.Count > 0){

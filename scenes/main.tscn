@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4yws1b6launf"]
+[gd_scene load_steps=8 format=3 uid="uid://c4yws1b6launf"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_q66b3"]
 [ext_resource type="Script" path="res://scripts/Hand.cs" id="2_hwog3"]
 [ext_resource type="PackedScene" uid="uid://ccixinbs2bmm7" path="res://scenes/CardManager.tscn" id="2_xso4x"]
 [ext_resource type="PackedScene" uid="uid://ceqn6hklk73d" path="res://scenes/Deck.tscn" id="3_ncjby"]
+[ext_resource type="Script" path="res://scripts/GameManager.cs" id="5_oq6i4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dixya"]
 size = Vector2(649, 599.5)
@@ -146,6 +147,9 @@ offset_top = 595.0
 offset_right = 561.0
 offset_bottom = 670.0
 text = "Reset"
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("5_oq6i4")
 
 [connection signal="pressed" from="Temp/Draw" to="." method="OnDrawCardButtonPressed"]
 [connection signal="pressed" from="Temp/Discard" to="." method="OnDiscardCardButtonPressed"]

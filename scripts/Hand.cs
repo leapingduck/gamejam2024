@@ -33,12 +33,12 @@ public partial class Hand : Node2D
 		RotationCurve.AddPoint(new Vector2(0.5f, 0)); // Middle card
 		RotationCurve.AddPoint(new Vector2(1, 25)); // Right-most card
 
-
+		/*
 		for (int i = 0; i < HAND_COUNT; i++)
 		{
 			DrawCard();
 		}
-
+		*/
 		// Called every time the node is added to the scene.
 		// Initialization here
 	}
@@ -50,12 +50,13 @@ public partial class Hand : Node2D
 
 	public void AddCardToHand(Card card){
 		if(card is null) return;
-		
+
 		if(!Cards.Contains(card)){
 			Cards.Add(card);
 			UpdateHandPosition();
 		}
 		else {
+			card.GetNode<AnimationPlayer>("AnimationPlayer").Play("card_flip");
 			AnimateCardPosition(card, card.HandPosition, card.HandRotation);
 		}
 	}

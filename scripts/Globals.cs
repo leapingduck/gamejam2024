@@ -25,3 +25,28 @@ public enum Rank
 	Queen = 12,
 	King = 13
 }
+
+public enum CollisionMask
+{
+	Card = 1,
+	CardSlot = 2,
+	Deck = 3
+}
+
+public enum GameState
+{
+    WaitingForPlayers,
+    DealingCards,
+    PassingCards,
+    PlayingTricks,
+    ScoringRound,
+	PickingModifiers,
+    GameOver
+}
+
+public interface IGameState{
+	void Enter();
+	void Execute();
+	void Exit();
+	GameState? CheckForTransition();
+}
