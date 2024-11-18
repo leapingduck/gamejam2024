@@ -12,7 +12,7 @@ public partial class Game : Control
 
 	private void OnDrawCardButtonPressed()
 	{
-		hand.Draw();
+		hand.DrawCard();
 	}
 
 	private void OnResetButtonPressed()

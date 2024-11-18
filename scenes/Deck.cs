@@ -21,14 +21,19 @@ public partial class Deck : Node2D
 			foreach(Rank rank in (Rank[])Enum.GetValues(typeof(Rank))){
 				Card card = (Card)cardScene.Instantiate();
 				card.Name = $"{rank} of {suit}";
+				
 				card.Position = GlobalPosition;
-				GetParent().GetNode<CardManager>("CardManager").AddChild(card);
 
-				Rect2 faceRegion = new Rect2((int)rank * cardWidth, (int)suit * cardHeight, cardWidth, cardHeight);
+				int cardStart_X = (int)rank == 1 ? 0 : ((int)rank - 1) * cardWidth;
+				int cardStart_Y = (int)suit == 1 ? 0 : ((int)suit - 1) * cardHeight;
+
+				Rect2 faceRegion = new Rect2(cardStart_X, cardStart_Y, cardWidth, cardHeight);
 				Rect2 backRegion = new Rect2(256, 356, cardWidth, cardHeight);
 				
 				card.Initialize(suit, rank, faceRegion, backRegion);
 				cards.Add(card);
+				
+				GetParent().GetNode<CardManager>("CardManager").AddChild(card);
 			}
 		}
 		
