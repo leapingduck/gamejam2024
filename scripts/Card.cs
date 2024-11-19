@@ -9,6 +9,11 @@ public partial class Card : Node2D
 	public Vector2 HandPosition { get; set; } 
 	public float HandRotation { get; set; }
 
+	private Hand _currentHand = null;
+	public Hand CurrentHand => _currentHand;
+
+	public void SetHand(Hand hand){ _currentHand = hand; }
+
  	public void Initialize(Suit suit, Rank rank, Rect2 faceRegion, Rect2 backRegion)
 	{
 		GetNode<Sprite2D>("CardFace").RegionRect = faceRegion;

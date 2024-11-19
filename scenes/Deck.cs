@@ -2,6 +2,8 @@ using Godot;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 public partial class Deck : Node2D
 {
@@ -39,6 +41,10 @@ public partial class Deck : Node2D
 		
 	}
 
+	public bool IsEmpty(){
+		return cards.Count == 0;
+	}
+
 	public Card DrawCard(){
 		Card card = cards[0];
 		cards.RemoveAt(0);
@@ -48,6 +54,19 @@ public partial class Deck : Node2D
 	public void DealCard(Hand hand){
 		Card card = DrawCard();
 		hand.AddCardToHand(card);
+	}
+
+	public void DealCards(List<Hand> hands){
+		int handIndex = 0;
+
+		while(cards.Count > 0){
+			DealCard(hands[handIndex]);
+			handIndex++;
+			if(handIndex >= hands.Count){
+				handIndex = 0;
+			}
+			//TODO: Add a delay so the cards are dealt one at a time
+		}
 	}
 
 	public void ShuffleDeck(){

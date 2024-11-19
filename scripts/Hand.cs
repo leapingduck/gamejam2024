@@ -4,6 +4,13 @@ using Godot;
 
 public partial class Hand : Node2D
 {
+	[Export]
+	public bool isLocalPlayer = false;
+
+	[Export]
+	public HandPosition handPosition = HandPosition.Bottom;
+
+	public int PlayerID = 0;
 	
 	private PackedScene CARD = (PackedScene)GD.Load("res://scenes/card.tscn");
 	private int HAND_COUNT = 5;
@@ -33,14 +40,7 @@ public partial class Hand : Node2D
 		RotationCurve.AddPoint(new Vector2(0.5f, 0)); // Middle card
 		RotationCurve.AddPoint(new Vector2(1, 25)); // Right-most card
 
-		/*
-		for (int i = 0; i < HAND_COUNT; i++)
-		{
-			DrawCard();
-		}
-		*/
-		// Called every time the node is added to the scene.
-		// Initialization here
+		
 	}
 
 	public void DrawCard(){
@@ -52,11 +52,14 @@ public partial class Hand : Node2D
 		if(card is null) return;
 
 		if(!Cards.Contains(card)){
+			card.SetHand(this);
 			Cards.Add(card);
 			UpdateHandPosition();
+			if(isLocalPlayer){
+				card.GetNode<AnimationPlayer>("AnimationPlayer").Play("card_flip");
+			}
 		}
 		else {
-			card.GetNode<AnimationPlayer>("AnimationPlayer").Play("card_flip");
 			AnimateCardPosition(card, card.HandPosition, card.HandRotation);
 		}
 	}
@@ -84,13 +87,29 @@ public partial class Hand : Node2D
 	private (Vector2 newPosition, float targetRotation) CalculateCardPosition(int index){
 		
 		float t = Cards.Count == 1 ? 0.5f : (float)index / (Cards.Count - 1); // Normalized value between 0 and 1
-		float rotation = RotationCurve.Sample(t);
-		float spacing = 150.0f;
+		float rotation = 0;// RotationCurve.Sample(t); // Leave off the curve for now
+		float spacing = handPosition == HandPosition.Bottom ? 100.0f : 25.0f;
 		
 		Vector2 handCenter = GlobalPosition; 
 		
 		float offsetX = spacing * index - (spacing * (Cards.Count - 1) / 2);
 		float offsetY = Mathf.Abs(rotation * 2.5f);
+
+		switch(handPosition){
+			case HandPosition.Top:
+				offsetY = -offsetY;
+				break;
+			case HandPosition.Bottom:
+				break;
+			case HandPosition.Left:
+				(offsetX, offsetY) = (offsetY, offsetX);
+				rotation += 90;
+				break;
+			case HandPosition.Right:
+				(offsetX, offsetY) = (-offsetY, offsetX);
+				rotation -= 90;
+				break;
+		}
 
 		return (handCenter + new Vector2(offsetX, offsetY), rotation);
 	}
@@ -98,8 +117,8 @@ public partial class Hand : Node2D
 	private void AnimateCardPosition(Card card, Vector2 targetPosition, float targetRotation){
 		var tween = CreateTween();
 		
-		tween.TweenProperty(card, "position", targetPosition, 0.5f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-		tween.TweenProperty(card, "rotation_degrees", targetRotation, 0.5f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(card, "position", targetPosition, 0.35f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(card, "rotation_degrees", targetRotation, 0.35f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 	}
 
 	public void Draw()
@@ -112,4 +131,13 @@ public partial class Hand : Node2D
 	{
 		GD.Print("Discard a Card");
 	}
+}
+
+
+public enum HandPosition
+{
+	Top,
+	Bottom,
+	Left,
+	Right
 }

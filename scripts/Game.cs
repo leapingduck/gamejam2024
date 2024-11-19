@@ -4,6 +4,7 @@ public partial class Game : Control
 
 {
 	private Hand hand;
+	private CardManager cardManager;
 
 	public override void _Ready()
 	{
@@ -12,7 +13,8 @@ public partial class Game : Control
 
 	private void OnDrawCardButtonPressed()
 	{
-		hand.DrawCard();
+		
+		//hand.DrawCard();
 	}
 
 	private void OnResetButtonPressed()

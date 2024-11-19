@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 public partial class GameManager : Node
 {
@@ -23,7 +24,7 @@ public partial class GameManager : Node
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_currentState = _stateMap[GameState.WaitingForPlayers];
+		_currentState = _stateMap[GameState.DealingCards];
 		_currentState.Enter();
 	}
 
@@ -31,6 +32,13 @@ public partial class GameManager : Node
 	public override void _Process(double delta)
 	{
 		_currentState.Execute();
+		var transitionResult = _currentState.CheckForTransition();
+		if(transitionResult.HasValue)
+		{
+			_currentState.Exit();
+			_currentState = _stateMap[transitionResult.Value];
+			_currentState.Enter();
+		}
 	}
 
 	private IGameState _currentState;
@@ -75,18 +83,34 @@ public class DealingCardsState : IGameState
 {
 	private readonly GameManager _gameManager;
 
+	private List<Hand> _hands;
+	private Deck _deck;
+
 	public DealingCardsState(GameManager gameManager)
 	{
 		_gameManager = gameManager;
+		_hands = new ();
+		
 	}
 
 	public void Enter()
 	{
+		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Hand"));
+		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player2Hand"));
+		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player3Hand"));
+		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player4Hand"));
+
+		_deck = _gameManager.GetParent().GetNode<Deck>("Deck");
 		Console.WriteLine("Entering DealingCards state...");
 	}
 
 	public void Execute()
 	{
+		if(_deck is null){
+			Console.WriteLine("Deck is null");
+			return;
+		}
+		_deck.DealCards(_hands);
 		Console.WriteLine("Executing DealingCards state...");
 		// Add logic for dealing cards to players.
 	}
@@ -98,6 +122,10 @@ public class DealingCardsState : IGameState
 
 	public GameState? CheckForTransition()
 	{
+		if(_deck.IsEmpty())
+		{
+			return GameState.PassingCards;
+		}
 		// Add logic to check for transition conditions.
 		return null;
 	}

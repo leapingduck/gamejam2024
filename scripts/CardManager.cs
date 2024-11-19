@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System.Collections.Generic;
 using System;
 using System.Linq;
 
@@ -9,13 +10,16 @@ public partial class CardManager : Node2D
 	Rect2 ScreenSize;
 	Card CardBeingDragged = null;
 	Hand PlayerHand = null;
+	Hand PlayerHand2 = null;
+	Hand PlayerHand3 = null;
+	Hand PlayerHand4 = null;
 
 	bool isHoveringOnCard = false;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		ScreenSize = GetViewportRect();
-		PlayerHand = GetParent().GetNode<Hand>("Hand");
+		
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -34,17 +38,40 @@ public partial class CardManager : Node2D
 	public override void _Input(InputEvent @event)
 	{
 		if(@event is InputEventMouseButton mouseEvent){
+			if(mouseEvent.DoubleClick){
+				var card = (Card)raycastCheckForCard();
+				if(card is not null && card.CurrentHand.isLocalPlayer){
+					Console.WriteLine($"Card is local player Double Click: {card.Name}");
+					//Emit this double click and let GameManager handle it in the current state
+				}
+			}
+
+			if(mouseEvent.ButtonIndex == MouseButton.Left){
+				if(mouseEvent.Pressed){
+				
+				}
+				if(!mouseEvent.Pressed){
+					var card = (Card)raycastCheckForCard();
+					if(card is not null && card.CurrentHand.isLocalPlayer){
+						Console.WriteLine($"Card is local player: {card.Name}");
+						//Emit this click and let GameManager handle it in the current state
+					}
+				}
+			}
+
+			/*
 			if(mouseEvent.ButtonIndex == MouseButton.Left){
 				if(mouseEvent.Pressed){
 					var card = (Card)raycastCheckForCard();
 					if(card is not null){
-						StartDrag(card);
+						//StartDrag(card);
 					}
 				}
 				if(!mouseEvent.Pressed){
 					EndDrag(CardBeingDragged);
 				}
 			}
+			*
 			/*
 			if(mouseEvent.ButtonIndex == MouseButton.Right){
 				if(mouseEvent.Pressed){
@@ -69,7 +96,7 @@ public partial class CardManager : Node2D
 		if(cardSlot is not null){
 			CardBeingDragged.GlobalPosition = cardSlot.GlobalPosition;
 			var tween = CreateTween();
-			tween.TweenProperty(CardBeingDragged, "rotation_degrees", 0, 0.25f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+			tween.TweenProperty(CardBeingDragged, "rotation_degrees", 0, 0.20f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 		}
 
 		if(cardSlot is null){
@@ -156,6 +183,7 @@ public partial class CardManager : Node2D
 	}
 
 	private void hightlightCard(Card card, bool highlight){
+		if(!card.CurrentHand.isLocalPlayer) { return; };
 		if(highlight){
 			card.Scale = new Vector2(1.2f, 1.2f);
 			card.ZIndex = 2;
