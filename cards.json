@@ -1,0 +1,231 @@
+[
+    {
+        "Name": "Ignore all twos",
+        "Description": "All twos are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all threes",
+        "Description": "All threes are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all fours",
+        "Description": "All fours are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all fives",
+        "Description": "All fives are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all sixes",
+        "Description": "All sixes are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all sevens",
+        "Description": "All sevens are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all eights",
+        "Description": "All eights are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all nines",
+        "Description": "All nines are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all tens",
+        "Description": "All tens are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all Jacks",
+        "Description": "All Jacks are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all Queens",
+        "Description": "All Queens are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all Kings",
+        "Description": "All Kings are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Ignore all Aces",
+        "Description": "All Aces are ignored for points and winning",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Reverse Rank",
+        "Description": "This hand the lowest card takes the trick",
+        "WinCondition": "lowCard"
+    },
+    {
+        "Name": "Blindfold",
+        "Description": "Next turn, all cards are placed face down. (Declare trump suit)",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Heart Bomb",
+        "Description": "This turn all cards count as hearts",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Spade Bomb",
+        "Description": "This turn all cards count as hearts",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Club Bomb",
+        "Description": "This turn all cards count as hearts",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Diamond Bomb",
+        "Description": "This turn all cards count as hearts",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Wound Salt",
+        "Description": "Whoever takes this hand trades a random card with each player. Others can decide a card",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Royal Flush",
+        "Description": "If a player wins this hand with a King or Queen, they gain bonus points.",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Wildcard Chaos",
+        "Description": "Trump suit is chosen randomly for this trick.",
+        "effect": "randomSuit"
+    },
+    {
+        "Name": "Gift bag",
+        "Description": "The player who wins the givesthree points to another player of their choice.",
+        "WinCondition": "standard"
+    },
+    {
+        "Name": "Black Hole",
+        "Description": "All cards played this round are removed from the game and don't count for scoring.",
+        "WinCondition": "voidTrick",
+        "comment": "not sure how problematic this would be"
+    },
+    {
+        "Name": "Echo",
+        "Description": "The two highest cards each score points",
+        "WinCondition": "dualWinner"
+    },
+    {
+        "Name": "Double Trouble",
+        "Description": "Points are doubled this round",
+        "WinCondition": "doublePoints"
+    },
+    {
+        "Name": "Hearts of Steel",
+        "Description": "Hearts cannot be used to lead the next trick.",
+        "WinCondition": "restricted"
+    },
+    {
+        "Name": "Spades of Steel",
+        "Description": "Spades cannot be used to lead the next trick.",
+        "WinCondition": "restricted"
+    },
+    {
+        "Name": "Clubs of Steel",
+        "Description": "Clubs cannot be used to lead the next trick.",
+        "WinCondition": "restricted"
+    },
+    {
+        "Name": "Diamonds of Steel",
+        "Description": "Diamonds cannot be used to lead the next trick.",
+        "WinCondition": "restricted"
+    },
+    {
+        "Name": "Pointless Victory",
+        "Description": "The winner of this trick earns no points.",
+        "WinCondition": "noScore"
+    },
+    {
+        "Name": "Trump Trade",
+        "Description": "The winning card's suit becomes the trump suit for the next trick. (Must lead with this suit if available)",
+        "effect": "trumpSwitch"
+    },
+    {
+        "Name": "Wild Revolution",
+        "Description": "All cards in player's hands reverse value.",
+        "effect": "rankFlip",
+        "comment": "Ace to two, king to three, etc.."
+
+    },
+    {
+        "Name": "Lunar Cycle",
+        "Description": "All face cards count as their numerical rank minus 10 for this hand.",
+        "effect": "faceValueAdjust"
+    },
+    {
+        "Name": "Resurrection",
+        "Description": "Each player can take a card from the tricks they've won.",
+        "effect": "graveyard",
+        "comment": "how to handle players without a trick?"
+    },
+    {
+        "Name": "Pass Left",
+        "Description": "Everyone passes 3 cards left (all cards if hand is 3 or fewer",
+        "effect": "pass(left)"
+    },
+    {
+        "Name": "Pass Right",
+        "Description": "Everyone passes 3 cards right (all cards if hand is 3 or fewer",
+        "effect": "pass(right)"
+    },
+    {
+        "Name": "Pass Across",
+        "Description": "Everyone passes 3 cards across (all cards if hand is 3 or fewer",
+        "effect": "pass(across)"
+    },
+    {
+        "Name": "Mary Sue",
+        "Description": "The Queen of Spades counts for -13 points this hand"
+    },
+    {
+        "Name": "Trumpless",
+        "Description": "No trump suit this turn (high card wins)"
+    },
+    {
+        "Name": "Cancel^2",
+        "Description": "Cancels don't count ( both players get points if high card is cancelled"
+    },
+    {
+        "Name": "Chaos",
+        "Description": "Each player throws 3 cards into a pile. That pile is shuffled and dealt back to everyone",
+        "comment": "Update card text to number of cards that each player has if <3"
+    },
+    {
+        "Name": "Partner",
+        "Description": "You and the person across from you both score the same points for the next three hands",
+        "comment": "single player only, obviously"
+    },
+    {
+        "Name": "Show one",
+        "Description": "Each player reveals one card to the table at random"
+    },
+    {
+        "Name": "Swap hands",
+        "Description": "Swap your entire hand with the person across"
+    },
+    {
+        "Name": "Double Round",
+        "Description": "Next round play goes around twice (Each player plays two cards"
+    }
+
+]
