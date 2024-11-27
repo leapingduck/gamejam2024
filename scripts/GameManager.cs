@@ -6,6 +6,7 @@ using System.Runtime.ExceptionServices;
 public partial class GameManager : Node
 {
 	private readonly Dictionary<GameState, IGameState> _stateMap;
+	private WebRtcClient _webRtcClient;
 
 	public GameManager()
 	{
@@ -24,7 +25,8 @@ public partial class GameManager : Node
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_currentState = _stateMap[GameState.DealingCards];
+		_webRtcClient = GetParent().GetNode<WebRtcClient>("WebRTCClient");
+		_currentState = _stateMap[GameState.WaitingForPlayers];
 		_currentState.Enter();
 	}
 
@@ -41,6 +43,11 @@ public partial class GameManager : Node
 		}
 	}
 
+	public void ConnectToServer()
+	{
+		_webRtcClient.ConnectToUrl("ws://localhost:8888");
+	}
+
 	private IGameState _currentState;
 
     public IGameState CurrentState => _currentState;
@@ -54,10 +61,12 @@ public class WaitingForPlayersState : IGameState
 	public WaitingForPlayersState(GameManager gameManager)
 	{
 		_gameManager = gameManager;
+			
 	}
 
 	public void Enter()
 	{
+		_gameManager.ConnectToServer();
 		Console.WriteLine("Entering WaitingForPlayers state...");
 	}
 
@@ -134,6 +143,7 @@ public class DealingCardsState : IGameState
 public class PassingCardsState : IGameState
 {
 	private readonly GameManager _gameManager;
+	private CardManager _cardManager;
 
 	public PassingCardsState(GameManager gameManager)
 	{
@@ -142,7 +152,15 @@ public class PassingCardsState : IGameState
 
 	public void Enter()
 	{
+		_cardManager = _gameManager.GetParent().GetNode<CardManager>("CardManager");
 		Console.WriteLine("Entering PassingCards state...");
+		_cardManager.CardClicked += (Card card) =>  OnCardClicked(card);
+	}
+
+	private void OnCardClicked(Card card)
+	{
+		//Select the card to be passed and highlight it if 3 cards selected then pass and mark as passed
+		// Add logic for passing cards between players.
 	}
 
 	public void Execute()
@@ -154,11 +172,12 @@ public class PassingCardsState : IGameState
 	public void Exit()
 	{
 		Console.WriteLine("Exiting PassingCards state...");
+		_cardManager.CardClicked -= (Card card) =>  OnCardClicked(card);
 	}
 
 	public GameState? CheckForTransition()
 	{
-		// Add logic to check for transition conditions.
+		//Once all players have passed cards then move to the next state
 		return null;
 	}
 }

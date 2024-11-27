@@ -1,10 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4yws1b6launf"]
+[gd_scene load_steps=9 format=3 uid="uid://c4yws1b6launf"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_q66b3"]
 [ext_resource type="Script" path="res://scripts/Hand.cs" id="2_hwog3"]
 [ext_resource type="PackedScene" uid="uid://ccixinbs2bmm7" path="res://scenes/CardManager.tscn" id="2_xso4x"]
 [ext_resource type="PackedScene" uid="uid://ceqn6hklk73d" path="res://scenes/Deck.tscn" id="3_ncjby"]
+[ext_resource type="Script" path="res://scripts/WebRtcClient.cs" id="5_d478r"]
 [ext_resource type="Script" path="res://scripts/GameManager.cs" id="5_oq6i4"]
+[ext_resource type="PackedScene" uid="uid://54ptddr0t8eb" path="res://scenes/network_ui.tscn" id="6_ybu7p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dixya"]
 size = Vector2(649, 457.375)
@@ -90,6 +92,13 @@ offset_top = 595.0
 offset_right = 561.0
 offset_bottom = 670.0
 text = "Reset"
+
+[node name="WebRTCClient" type="Node" parent="."]
+script = ExtResource("5_d478r")
+
+[node name="NetworkUI" parent="." instance=ExtResource("6_ybu7p")]
+z_index = 50
+layout_mode = 1
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("5_oq6i4")

@@ -1,0 +1,112 @@
+using Godot;
+using System;
+
+public partial class NetworkUi : Control
+{
+	private Multiplayer_Client Client => (Multiplayer_Client)GetNode<Node>("Client");
+    private LineEdit Host => GetNode<LineEdit>("VBoxContainer/Connect/Host");
+    private LineEdit Room => GetNode<LineEdit>("VBoxContainer/Connect/RoomSecret");
+    private CheckBox Mesh => GetNode<CheckBox>("VBoxContainer/Connect/Mesh");
+
+	private Button StartBtn => GetNode<Button>("VBoxContainer/Connect/Start");
+	private Button StopBtn => GetNode<Button>("VBoxContainer/Connect/Stop");
+	private Button PeerBtn => GetNode<Button>("VBoxContainer/Connect/Button");
+
+    public override void _Ready()
+    {
+        // Connect client signals
+        Client.LobbyJoined += OnLobbyJoined;
+		Client.LobbySealed += OnLobbySealed;
+		Client.Connected += OnConnected;
+		Client.Disconnected += OnDisconnected;
+        
+
+        // Connect multiplayer signals
+		Multiplayer.ConnectedToServer += OnMpServerConnected;
+		Multiplayer.ConnectionFailed += OnMpServerDisconnected;
+		Multiplayer.ServerDisconnected += OnMpServerDisconnected;
+        Multiplayer.PeerConnected += OnMpPeerConnected;
+		Multiplayer.PeerDisconnected += OnMpPeerDisconnected;
+
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void Ping(float argument)
+    {
+        Log($"[Multiplayer] Ping from peer {Multiplayer.GetRemoteSenderId()}: arg: {argument}");
+    }
+
+    private void OnMpServerConnected()
+    {
+        Log($"[Multiplayer] Server connected (I am {Client.Get("rtc_mp").As<Node>().Get("unique_id")})");
+    }
+
+    private void OnMpServerDisconnected()
+    {
+        Log($"[Multiplayer] Server disconnected (I am {Client.Get("rtc_mp").As<Node>().Get("unique_id")})");
+    }
+
+    private void OnMpPeerConnected(long id)
+    {
+        Log($"[Multiplayer] Peer {id} connected");
+    }
+
+    private void OnMpPeerDisconnected(long id)
+    {
+        Log($"[Multiplayer] Peer {id} disconnected");
+    }
+
+    private void OnConnected(int id, bool useMesh)
+    {
+        Log($"[Signaling] Server connected with ID: {id}. Mesh: {useMesh}");
+    }
+
+    private void OnDisconnected()
+    {
+        Log($"[Signaling] Server disconnected: {Client.Get("code")}, Reason: {Client.Get("reason")}");
+    }
+
+    private void OnLobbyJoined(string lobby)
+    {
+        Log($"[Signaling] Joined lobby {lobby}");
+    }
+
+    private void OnLobbySealed()
+    {
+        Log("[Signaling] Lobby has been sealed");
+    }
+
+    private void Log(string msg)
+    {
+        GD.Print(msg);
+        var textEdit = GetNode<TextEdit>("VBoxContainer/TextEdit");
+        textEdit.Text += msg + "\n";
+    }
+
+    private void OnPeersPressed()
+    {
+        var peerNumbers = Multiplayer.GetPeers();
+        
+        Log($"[Multiplayer] Peers: {string.Join(", ", peerNumbers)}");
+    }
+
+    private void OnPingPressed()
+    {
+        Rpc(nameof(Ping), GD.Randf());
+    }
+
+    private void OnSealPressed()
+    {
+        Client.SealLobby();
+    }
+
+    private void OnStartPressed()
+    {
+        Client.Call("Start", Host.Text, Room.Text, Mesh.ButtonPressed);
+    }
+
+    private void OnStopPressed()
+    {
+        Client.Call("Stop");
+    }
+}

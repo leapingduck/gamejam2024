@@ -1,11 +1,18 @@
 using Godot;
-using Godot.Collections;
-using System.Collections.Generic;
 using System;
 using System.Linq;
 
 public partial class CardManager : Node2D
 {
+
+	// Emit CardClicked signal
+	[Signal]
+	public delegate void CardClickedEventHandler(Card card);
+
+	//Emit CardDoubleClicked signal
+	[Signal]
+	public delegate void CardDoubleClickedEventHandler(Card card);
+
 
 	Rect2 ScreenSize;
 	Card CardBeingDragged = null;
@@ -183,7 +190,7 @@ public partial class CardManager : Node2D
 	}
 
 	private void hightlightCard(Card card, bool highlight){
-		if(!card.CurrentHand.isLocalPlayer) { return; };
+		if(card.CurrentHand == null || !card.CurrentHand.isLocalPlayer) { return; };
 		if(highlight){
 			card.Scale = new Vector2(1.2f, 1.2f);
 			card.ZIndex = 2;
