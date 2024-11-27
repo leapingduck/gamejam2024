@@ -41,12 +41,12 @@ expand_to_text_length = true
 
 [node name="Room" type="Label" parent="VBoxContainer/Connect"]
 layout_mode = 2
-text = "Room"
+text = "Room :"
 
 [node name="RoomSecret" type="LineEdit" parent="VBoxContainer/Connect"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "secret"
+placeholder_text = "Room code"
 expand_to_text_length = true
 
 [node name="Mesh" type="CheckBox" parent="VBoxContainer/Connect"]
@@ -60,24 +60,21 @@ alignment = 1
 
 [node name="Start" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Start"
+text = "Join Room"
 
 [node name="Stop" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Stop"
+text = "Disconnect"
 
 [node name="Seal" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Seal
+text = "Close Room
 "
 
-[node name="Ping" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="StartGame" type="Button" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
-text = "Ping"
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Print Peers"
+text = "Start Game"
 
 [node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -88,5 +85,4 @@ script = ExtResource("2_fpg26")
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Start" to="." method="OnStartPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Stop" to="." method="OnStopPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Ping" to="." method="OnPingPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button" to="." method="OnPeersPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/StartGame" to="." method="OnStartGamePressed"]

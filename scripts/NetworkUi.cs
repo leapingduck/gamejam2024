@@ -10,7 +10,10 @@ public partial class NetworkUi : Control
 
 	private Button StartBtn => GetNode<Button>("VBoxContainer/Connect/Start");
 	private Button StopBtn => GetNode<Button>("VBoxContainer/Connect/Stop");
-	private Button PeerBtn => GetNode<Button>("VBoxContainer/Connect/Button");
+	private Button StartGameBtn => GetNode<Button>("VBoxContainer/HBoxContainer/StartGame");
+
+    [Export]
+    public bool IsReadyToStart { get; private set; } = false;
 
     public override void _Ready()
     {
@@ -49,6 +52,11 @@ public partial class NetworkUi : Control
     private void OnMpPeerConnected(long id)
     {
         Log($"[Multiplayer] Peer {id} connected");
+        
+        if (Client.isAuthority()){
+            StartGameBtn.Visible = true;
+        }
+
     }
 
     private void OnMpPeerDisconnected(long id)
@@ -103,6 +111,18 @@ public partial class NetworkUi : Control
     private void OnStartPressed()
     {
         Client.Call("Start", Host.Text, Room.Text, Mesh.ButtonPressed);
+    }
+    
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void StartGame(){
+        IsReadyToStart = true;
+        GD.Print("Game started");
+        Log("[Signaling] Game started");
+    }
+
+    private void OnStartGamePressed()
+    {
+        Rpc(nameof(StartGame));
     }
 
     private void OnStopPressed()

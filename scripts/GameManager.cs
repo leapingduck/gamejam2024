@@ -7,6 +7,7 @@ public partial class GameManager : Node
 {
 	private readonly Dictionary<GameState, IGameState> _stateMap;
 	private WebRtcClient _webRtcClient;
+	private NetworkUi _networkUi;
 
 	public GameManager()
 	{
@@ -26,6 +27,7 @@ public partial class GameManager : Node
 	public override void _Ready()
 	{
 		_webRtcClient = GetParent().GetNode<WebRtcClient>("WebRTCClient");
+		_networkUi = GetParent().GetNode<NetworkUi>("NetworkUI");
 		_currentState = _stateMap[GameState.WaitingForPlayers];
 		_currentState.Enter();
 	}
@@ -43,9 +45,22 @@ public partial class GameManager : Node
 		}
 	}
 
+
 	public void ConnectToServer()
 	{
-		_webRtcClient.ConnectToUrl("ws://localhost:8888");
+		_networkUi.Visible = true;
+		//_webRtcClient.ConnectToUrl("ws://localhost:8888");
+	}
+
+	public void HideNetworkUi()
+	{
+		_networkUi.Visible = false;
+		//_webRtcClient.HideNetworkUi();
+	}
+
+	public bool IsReadyToStart()
+	{
+		return _networkUi.IsReadyToStart;
 	}
 
 	private IGameState _currentState;
@@ -67,6 +82,7 @@ public class WaitingForPlayersState : IGameState
 	public void Enter()
 	{
 		_gameManager.ConnectToServer();
+		//_gameManager.ConnectToServer();
 		Console.WriteLine("Entering WaitingForPlayers state...");
 	}
 
@@ -78,12 +94,14 @@ public class WaitingForPlayersState : IGameState
 
 	public void Exit()
 	{
+		_gameManager.HideNetworkUi();
 		Console.WriteLine("Exiting WaitingForPlayers state...");
 	}
 
 	public GameState? CheckForTransition()
 	{
-		// Add logic to check for transition conditions.
+		if(_gameManager.IsReadyToStart()) {return GameState.DealingCards; }
+		
 		return null;
 	}
 }

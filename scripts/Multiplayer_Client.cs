@@ -38,6 +38,10 @@ public partial class Multiplayer_Client : WebRtcClient
         Close();
     }
 
+    public bool isAuthority(){
+        return rtcMp.GetUniqueId() == 1;
+    }
+
     private WebRtcPeerConnection CreatePeer(int id)
     {
         var peer = new WebRtcPeerConnection();
@@ -165,7 +169,7 @@ public partial class Multiplayer_Client : WebRtcClient
         GD.Print($"Got offer: {id}");
         if (rtcMp.HasPeer(id))
         {
-            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["Connection"]).SetRemoteDescription("offer", offer);
+            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["connection"]).SetRemoteDescription("offer", offer);
         }
     }
 
@@ -174,7 +178,7 @@ public partial class Multiplayer_Client : WebRtcClient
         GD.Print($"Got answer: {id}");
         if (rtcMp.HasPeer(id))
         {
-            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["Connection"]).SetRemoteDescription("answer", answer);
+            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["connection"]).SetRemoteDescription("answer", answer);
         }
     }
 
@@ -182,7 +186,7 @@ public partial class Multiplayer_Client : WebRtcClient
     {
         if (rtcMp.HasPeer(id))
         {
-            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["Connection"]).AddIceCandidate(mid, index, sdp);
+            ((WebRtcPeerConnection)rtcMp.GetPeer(id)["connection"]).AddIceCandidate(mid, index, sdp);
         }
     }
 }
