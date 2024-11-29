@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 
 public partial class GameManager : Node
@@ -8,6 +9,16 @@ public partial class GameManager : Node
 	private readonly Dictionary<GameState, IGameState> _stateMap;
 	private WebRtcClient _webRtcClient;
 	private NetworkUi _networkUi;
+
+	public List<Hand> _hands = new();
+
+	public Deck _deck;
+
+	public List<int> peerId_PlayOrder = new();
+
+	public bool isAuthority(){
+		return Multiplayer.GetUniqueId() == 1;
+	}
 
 	public GameManager()
 	{
@@ -28,6 +39,12 @@ public partial class GameManager : Node
 	{
 		_webRtcClient = GetParent().GetNode<WebRtcClient>("WebRTCClient");
 		_networkUi = GetParent().GetNode<NetworkUi>("NetworkUI");
+		_hands.Add(GetParent().GetNode<Hand>("Hand"));
+		_hands.Add(GetParent().GetNode<Hand>("Player2Hand"));
+		_hands.Add(GetParent().GetNode<Hand>("Player3Hand"));
+		_hands.Add(GetParent().GetNode<Hand>("Player4Hand"));
+
+		_deck = GetParent().GetNode<Deck>("Deck");
 		_currentState = _stateMap[GameState.WaitingForPlayers];
 		_currentState.Enter();
 	}
@@ -45,6 +62,43 @@ public partial class GameManager : Node
 		}
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	public void AssignHandsInOrder(int[] peers)
+    {
+		int myPeerId = Multiplayer.GetUniqueId();
+
+		GD.Print($"Assigning hands in order for peer {myPeerId}");
+		foreach(var peer in peers)
+		{
+			GD.Print($"Peer {peer}");
+		}
+
+		List<int> peerIds = new List<int>(peers);
+
+        // Sort peerIds so they're always in a consistent order
+        peerIds.Sort();
+		
+        // Find the index of the current client
+        int myIndex = peerIds.IndexOf(myPeerId);
+
+        // Assign the hands in a rotating manner
+        for (int i = 0; i < peerIds.Count; i++)
+        {
+            int handIndex = (i - myIndex + peerIds.Count) % peerIds.Count; // Circular index
+            _hands[handIndex].PlayerID = peerIds[i];
+        }
+
+        // Debug to ensure the hands are assigned correctly
+        foreach (var entry in _hands)
+        {
+            GD.Print($"{entry.Name}: Peer ID {entry.PlayerID}");
+        }
+    }
+
+	public void AssignHands(List<int> peerIds)
+	{
+		Rpc(MethodName.AssignHandsInOrder, peerIds.ToArray());
+	}
 
 	public void ConnectToServer()
 	{
@@ -82,7 +136,7 @@ public class WaitingForPlayersState : IGameState
 	public void Enter()
 	{
 		_gameManager.ConnectToServer();
-		//_gameManager.ConnectToServer();
+		
 		Console.WriteLine("Entering WaitingForPlayers state...");
 	}
 
@@ -94,6 +148,8 @@ public class WaitingForPlayersState : IGameState
 
 	public void Exit()
 	{
+		_gameManager.peerId_PlayOrder.Add(_gameManager.Multiplayer.GetUniqueId());
+		_gameManager.peerId_PlayOrder.AddRange(_gameManager.Multiplayer.GetPeers());
 		_gameManager.HideNetworkUi();
 		Console.WriteLine("Exiting WaitingForPlayers state...");
 	}
@@ -110,34 +166,33 @@ public class DealingCardsState : IGameState
 {
 	private readonly GameManager _gameManager;
 
-	private List<Hand> _hands;
-	private Deck _deck;
-
 	public DealingCardsState(GameManager gameManager)
 	{
 		_gameManager = gameManager;
-		_hands = new ();
-		
 	}
 
 	public void Enter()
 	{
-		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Hand"));
-		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player2Hand"));
-		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player3Hand"));
-		_hands.Add(_gameManager.GetParent().GetNode<Hand>("Player4Hand"));
+		if(_gameManager.isAuthority()){
+			_gameManager.AssignHands(_gameManager.peerId_PlayOrder);
+		}
 
-		_deck = _gameManager.GetParent().GetNode<Deck>("Deck");
 		Console.WriteLine("Entering DealingCards state...");
 	}
 
 	public void Execute()
 	{
-		if(_deck is null){
+		if(_gameManager._deck is null){
 			Console.WriteLine("Deck is null");
 			return;
 		}
-		_deck.DealCards(_hands);
+		
+		if(_gameManager.isAuthority()){
+			_gameManager._deck.GenDeck();
+			_gameManager._deck.ShuffleDeck();
+			_gameManager._deck.DealCards(_gameManager._hands);
+		}
+		
 		Console.WriteLine("Executing DealingCards state...");
 		// Add logic for dealing cards to players.
 	}
@@ -149,7 +204,7 @@ public class DealingCardsState : IGameState
 
 	public GameState? CheckForTransition()
 	{
-		if(_deck.IsEmpty())
+		if(_gameManager._deck.IsEmpty())
 		{
 			return GameState.PassingCards;
 		}
@@ -326,4 +381,12 @@ public class GameOverState : IGameState
 		// Add logic to check for transition conditions.
 		return null;
 	}
+}
+
+public enum PassPhase
+{
+	Left,
+	Right,
+	Across,
+	None
 }

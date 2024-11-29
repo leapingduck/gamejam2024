@@ -11,12 +11,6 @@ public partial class Game : Control
 		hand = GetNode<Hand>("Hand");
 	}
 
-	private void OnDrawCardButtonPressed()
-	{
-		
-		//hand.DrawCard();
-	}
-
 	private void OnResetButtonPressed()
 	{
 		GD.Print("Reset");

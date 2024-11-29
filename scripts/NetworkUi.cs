@@ -41,7 +41,7 @@ public partial class NetworkUi : Control
 
     private void OnMpServerConnected()
     {
-        Log($"[Multiplayer] Server connected (I am {Client.Get("rtc_mp").As<Node>().Get("unique_id")})");
+        Log($"[Multiplayer] Server connected (I am lost)");
     }
 
     private void OnMpServerDisconnected()

@@ -9,15 +9,28 @@ public partial class Deck : Node2D
 {
 	private List<Card> cards = new List<Card>();
 	private PackedScene cardScene = (PackedScene)GD.Load("res://scenes/card.tscn");
+
+	private static Random _random = new Random();
+
+	[Signal]
+	public delegate void OnDealCardEventHandler(int peerId, Card card);
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		GenerateDeck();
+		
 	}
 
-	private void GenerateDeck(){
+	public void GenDeck(){
+		Rpc(MethodName.GenerateDeck);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	public void GenerateDeck(){
 		int cardWidth = 256;
 		int cardHeight = 356;
+
+		cards.Clear();
 
 		foreach(Suit suit in (Suit[])Enum.GetValues(typeof(Suit))){
 			foreach(Rank rank in (Rank[])Enum.GetValues(typeof(Rank))){
@@ -51,15 +64,31 @@ public partial class Deck : Node2D
 		return card;
 	}
 
-	public void DealCard(Hand hand){
-		Card card = DrawCard();
-		hand.AddCardToHand(card);
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	public void DealCard(int peerId, string cardName){
+		Card card = cards.Find(c => c.Name == cardName);
+		cards.Remove(card);
+
+		EmitSignal(SignalName.OnDealCard, peerId, card);
 	}
 
+	public void DealCard(Hand hand){
+		Card card = cards[0];// DrawCard();
+		Rpc(MethodName.DealCard, hand.PlayerID, card.Name);
+		//DealCard(hand.PlayerID, card.Name);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
 	public void DealCards(List<Hand> hands){
 		int handIndex = 0;
 
 		while(cards.Count > 0){
+			if(hands[handIndex].PlayerID == 0){  
+				handIndex++;
+				if(handIndex >= hands.Count){
+					handIndex = 0;
+				}
+			}
 			DealCard(hands[handIndex]);
 			handIndex++;
 			if(handIndex >= hands.Count){
@@ -69,8 +98,15 @@ public partial class Deck : Node2D
 		}
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
 	public void ShuffleDeck(){
-		
+        int n = cards.Count;
+        for (int i = n - 1; i > 0; i--)
+        {
+            int j = _random.Next(i + 1); // Get a random index
+            // Swap cards[i] with cards[j]
+            (cards[i], cards[j]) = (cards[j], cards[i]);
+        }
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

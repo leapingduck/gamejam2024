@@ -72,13 +72,6 @@ metadata/_edit_lock_ = true
 
 [node name="Temp" type="Node" parent="."]
 
-[node name="Draw" type="Button" parent="Temp"]
-offset_left = 388.0
-offset_top = 406.0
-offset_right = 561.0
-offset_bottom = 481.0
-text = "Draw"
-
 [node name="Discard" type="Button" parent="Temp"]
 offset_left = 388.0
 offset_top = 496.0
@@ -103,6 +96,5 @@ layout_mode = 1
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("5_oq6i4")
 
-[connection signal="pressed" from="Temp/Draw" to="." method="OnDrawCardButtonPressed"]
 [connection signal="pressed" from="Temp/Discard" to="." method="OnDiscardCardButtonPressed"]
 [connection signal="pressed" from="Temp/Reset" to="." method="OnResetButtonPressed"]

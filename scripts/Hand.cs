@@ -34,6 +34,8 @@ public partial class Hand : Node2D
 		centerScreenX = (int)GetViewport().GetVisibleRect().Size.X / 2;
 		
 		deck = GetParent().GetNode<Deck>("Deck");
+
+		deck.OnDealCard += AddCardToHand;
 		
 		RotationCurve = new Curve();
 		RotationCurve.AddPoint(new Vector2(0, -25)); // Left-most card
@@ -45,6 +47,13 @@ public partial class Hand : Node2D
 
 	public void DrawCard(){
 		var card = deck.DrawCard();
+		AddCardToHand(card);
+	}
+
+	public void AddCardToHand(int peerId, Card card){
+		
+		if(peerId != PlayerID) return;
+
 		AddCardToHand(card);
 	}
 
@@ -72,6 +81,7 @@ public partial class Hand : Node2D
 			
 			card.HandPosition = newPositionData.newPosition;
 			card.HandRotation = newPositionData.targetRotation;
+			card.ZIndex = i;
 
 			AnimateCardPosition(card, newPositionData.newPosition, newPositionData.targetRotation);
 		}
@@ -88,7 +98,7 @@ public partial class Hand : Node2D
 		
 		float t = Cards.Count == 1 ? 0.5f : (float)index / (Cards.Count - 1); // Normalized value between 0 and 1
 		float rotation = 0;// RotationCurve.Sample(t); // Leave off the curve for now
-		float spacing = handPosition == HandPosition.Bottom ? 100.0f : 25.0f;
+		float spacing = handPosition == HandPosition.Bottom ? 75.0f : 40.0f;
 		
 		Vector2 handCenter = GlobalPosition; 
 		
@@ -119,12 +129,6 @@ public partial class Hand : Node2D
 		
 		tween.TweenProperty(card, "position", targetPosition, 0.35f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(card, "rotation_degrees", targetRotation, 0.35f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-	}
-
-	public void Draw()
-	{
-		GD.Print("Draw a card");
-		
 	}
 
 	public void Discard()
