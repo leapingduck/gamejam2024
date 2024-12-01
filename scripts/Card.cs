@@ -12,6 +12,8 @@ public partial class Card : Node2D
 	private Hand _currentHand = null;
 	public Hand CurrentHand => _currentHand;
 
+	public bool isSelected = false;
+
 	public void SetHand(Hand hand){ _currentHand = hand; }
 
  	public void Initialize(Suit suit, Rank rank, Rect2 faceRegion, Rect2 backRegion)

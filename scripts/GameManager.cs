@@ -9,6 +9,7 @@ public partial class GameManager : Node
 	private readonly Dictionary<GameState, IGameState> _stateMap;
 	private WebRtcClient _webRtcClient;
 	private NetworkUi _networkUi;
+	private CardManager _cardManager;
 
 	public List<Hand> _hands = new();
 
@@ -45,6 +46,9 @@ public partial class GameManager : Node
 		_hands.Add(GetParent().GetNode<Hand>("Player4Hand"));
 
 		_deck = GetParent().GetNode<Deck>("Deck");
+		_cardManager = GetParent().GetNode<CardManager>("CardManager");
+		_cardManager.CardClicked += OnCardClicked;
+
 		_currentState = _stateMap[GameState.WaitingForPlayers];
 		_currentState.Enter();
 	}
@@ -103,18 +107,32 @@ public partial class GameManager : Node
 	public void ConnectToServer()
 	{
 		_networkUi.Visible = true;
-		//_webRtcClient.ConnectToUrl("ws://localhost:8888");
 	}
 
 	public void HideNetworkUi()
 	{
 		_networkUi.Visible = false;
-		//_webRtcClient.HideNetworkUi();
 	}
 
 	public bool IsReadyToStart()
 	{
 		return _networkUi.IsReadyToStart;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+	public void CardClicked(string cardName, bool isSelected, int peerId){
+		//TODO: Figure this out.
+		GD.Print($"Card {cardName} clicked by peer {peerId}");
+		_cardManager.selectCard(cardName, isSelected);
+		
+	}
+
+	private void OnCardClicked(Card card)
+	{
+		GD.Print($"Reporting Card {card.Name} clicked");
+		Rpc(MethodName.CardClicked, card.Name, !card.isSelected, Multiplayer.GetUniqueId());		
+
+		
 	}
 
 	private IGameState _currentState;

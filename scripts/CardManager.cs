@@ -49,6 +49,7 @@ public partial class CardManager : Node2D
 				var card = (Card)raycastCheckForCard();
 				if(card is not null && card.CurrentHand.isLocalPlayer){
 					Console.WriteLine($"Card is local player Double Click: {card.Name}");
+					//selectCard(card, !card.isSelected);
 					//Emit this double click and let GameManager handle it in the current state
 				}
 			}
@@ -60,7 +61,9 @@ public partial class CardManager : Node2D
 				if(!mouseEvent.Pressed){
 					var card = (Card)raycastCheckForCard();
 					if(card is not null && card.CurrentHand.isLocalPlayer){
+						//selectCard(card, !card.isSelected);
 						Console.WriteLine($"Card is local player: {card.Name}");
+						EmitSignal(SignalName.CardClicked, card);
 						//Emit this click and let GameManager handle it in the current state
 					}
 				}
@@ -193,13 +196,65 @@ public partial class CardManager : Node2D
 		if(card.CurrentHand == null || !card.CurrentHand.isLocalPlayer) { return; };
 		if(highlight){
 			card.Scale = new Vector2(1.2f, 1.2f);
-			card.ZIndex = 2;
+			card.ZIndex = 99;
 		}
 		else {
 			card.Scale = new Vector2(1, 1);
-			card.ZIndex = 1;
+			card.ZIndex = card.CurrentHand.Cards.IndexOf(card);
 		}
 		
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	public void selectCard(string cardName, bool select){
+		var card = GetNode<Card>(cardName);
+		GD.Print($"Card {card.Name} Selected from remote");
+		selectCard(card, select);
+	}
+
+	private void selectCard(Card card, bool select){
+		if(card.CurrentHand == null) { return; };
+		//TODO: check there are no more than 3 selected.
+		
+		card.isSelected = select;
+		if(select){
+			
+			card.Scale = new Vector2(1.2f, 1.2f);
+			switch(card.CurrentHand.handPosition){
+				case HandPosition.Bottom:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y - 150);
+					break;
+				case HandPosition.Top:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y - 100);
+					break;
+				case HandPosition.Left:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
+					break;
+				case HandPosition.Right:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
+					break;
+			}
+			card.ZIndex = card.ZIndex++;
+		}
+		else {
+			
+			card.Scale = new Vector2(1, 1);
+			switch(card.CurrentHand.handPosition){
+				case HandPosition.Bottom:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y + 150);
+					break;
+				case HandPosition.Top:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y + 100);
+					break;
+				case HandPosition.Left:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
+					break;
+				case HandPosition.Right:
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
+					break;
+			}
+			card.ZIndex = card.ZIndex--;
+		}
 	}
 
 }
