@@ -129,7 +129,9 @@ public partial class CardManager : Node2D
 			
 			//if(cardItems.Count() == 0) return null;
 
-			var topItem = result.OrderByDescending(x => ((Area2D)x["collider"]).ZIndex).First();
+			var items = result.OrderByDescending(x => ((Card)((Area2D)x["collider"]).GetParent()).ZIndex);
+
+			var topItem = items.FirstOrDefault();
 			
 			if(topItem is null) return null;
 			
@@ -176,23 +178,23 @@ public partial class CardManager : Node2D
 	public void CardHovered(Card card){
 		if(!isHoveringOnCard){
 			isHoveringOnCard = true;
-			hightlightCard(card, true);
+			highlightCard(card, true);
 		}
 	}
 
 	public void CardExited(Card card){
-		hightlightCard(card, false);
+		highlightCard(card, false);
 
 		Card hovercard = raycastCheckForCard();
 		if(hovercard is null){
 			isHoveringOnCard = false;
 		}
 		if(hovercard is not null && hovercard != card){
-			hightlightCard(hovercard, true);
+			highlightCard(hovercard, true);
 		}
 	}
 
-	private void hightlightCard(Card card, bool highlight){
+	private void highlightCard(Card card, bool highlight){
 		if(card.CurrentHand == null || !card.CurrentHand.isLocalPlayer) { return; };
 		if(highlight){
 			card.Scale = new Vector2(1.2f, 1.2f);
@@ -237,7 +239,7 @@ public partial class CardManager : Node2D
 					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
 					break;
 			}
-			card.ZIndex = card.ZIndex++;
+			card.ZIndex = 100;
 		}
 		else {
 			
@@ -256,7 +258,7 @@ public partial class CardManager : Node2D
 					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
 					break;
 			}
-			card.ZIndex = card.ZIndex--;
+			card.ZIndex = card.CurrentHand.Cards.IndexOf(card) + 1;
 		}
 	}
 

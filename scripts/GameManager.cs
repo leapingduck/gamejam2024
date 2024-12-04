@@ -206,6 +206,7 @@ public class DealingCardsState : IGameState
 		if(_gameManager.isAuthority()){
 			_gameManager._deck.GenDeck();
 			_gameManager._deck.ShuffleDeck();
+			_gameManager._deck.ShuffleDeck();
 			_gameManager._deck.DealCards(_gameManager._hands);
 		}
 		
@@ -248,6 +249,7 @@ public class PassingCardsState : IGameState
 
 	private void OnCardClicked(Card card)
 	{
+		
 		//Select the card to be passed and highlight it if 3 cards selected then pass and mark as passed
 		// Add logic for passing cards between players.
 	}
