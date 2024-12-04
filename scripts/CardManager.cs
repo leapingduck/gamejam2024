@@ -200,7 +200,7 @@ public partial class CardManager : Node2D
 		}
 		else {
 			card.Scale = new Vector2(1, 1);
-			card.ZIndex = card.CurrentHand.Cards.IndexOf(card);
+			card.ZIndex = card.CurrentHand.Cards.IndexOf(card) + 1;
 		}
 		
 	}
@@ -214,8 +214,11 @@ public partial class CardManager : Node2D
 
 	private void selectCard(Card card, bool select){
 		if(card.CurrentHand == null) { return; };
-		//TODO: check there are no more than 3 selected.
 		
+		if(card.CurrentHand.Cards.Where(x => x.isSelected).Count() >= 3 && select){
+			return;
+		}
+
 		card.isSelected = select;
 		if(select){
 			
@@ -225,13 +228,13 @@ public partial class CardManager : Node2D
 					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y - 150);
 					break;
 				case HandPosition.Top:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y - 100);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y + 100);
 					break;
 				case HandPosition.Left:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
 					break;
 				case HandPosition.Right:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
 					break;
 			}
 			card.ZIndex = card.ZIndex++;
@@ -244,13 +247,13 @@ public partial class CardManager : Node2D
 					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y + 150);
 					break;
 				case HandPosition.Top:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y + 100);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X, card.GlobalPosition.Y - 100);
 					break;
 				case HandPosition.Left:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
 					break;
 				case HandPosition.Right:
-					card.GlobalPosition = new Vector2(card.GlobalPosition.X - 100, card.GlobalPosition.Y);
+					card.GlobalPosition = new Vector2(card.GlobalPosition.X + 100, card.GlobalPosition.Y);
 					break;
 			}
 			card.ZIndex = card.ZIndex--;

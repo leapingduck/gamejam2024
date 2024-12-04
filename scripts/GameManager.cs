@@ -71,11 +71,7 @@ public partial class GameManager : Node
     {
 		int myPeerId = Multiplayer.GetUniqueId();
 
-		GD.Print($"Assigning hands in order for peer {myPeerId}");
-		foreach(var peer in peers)
-		{
-			GD.Print($"Peer {peer}");
-		}
+		
 
 		List<int> peerIds = new List<int>(peers);
 
@@ -85,18 +81,20 @@ public partial class GameManager : Node
         // Find the index of the current client
         int myIndex = peerIds.IndexOf(myPeerId);
 
+		//If only two select hand across from each other.
+		if(peerIds.Count == 2){
+			_hands.Find(h => h.handPosition == HandPosition.Bottom).PlayerID = peerIds[myIndex];
+			_hands.Find(h => h.handPosition == HandPosition.Top).PlayerID = peerIds.FirstOrDefault(x => x != peerIds[myIndex]);
+			return;
+		}
+
         // Assign the hands in a rotating manner
         for (int i = 0; i < peerIds.Count; i++)
         {
             int handIndex = (i - myIndex + peerIds.Count) % peerIds.Count; // Circular index
             _hands[handIndex].PlayerID = peerIds[i];
         }
-
-        // Debug to ensure the hands are assigned correctly
-        foreach (var entry in _hands)
-        {
-            GD.Print($"{entry.Name}: Peer ID {entry.PlayerID}");
-        }
+       
     }
 
 	public void AssignHands(List<int> peerIds)

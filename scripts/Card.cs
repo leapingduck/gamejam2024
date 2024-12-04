@@ -6,6 +6,9 @@ public partial class Card : Node2D
 	public Suit Suit { get; set; }
 	public Rank Rank { get; set; }
 
+	private Sprite2D CardFace = null;
+	private Sprite2D borderSprite = null;
+
 	public Vector2 HandPosition { get; set; } 
 	public float HandRotation { get; set; }
 
@@ -18,9 +21,23 @@ public partial class Card : Node2D
 
  	public void Initialize(Suit suit, Rank rank, Rect2 faceRegion, Rect2 backRegion)
 	{
-		GetNode<Sprite2D>("CardFace").RegionRect = faceRegion;
 		this.Suit = suit;
 		this.Rank = rank;
+
+		CardFace = GetNode<Sprite2D>("CardFace");
+		CardFace.RegionRect = faceRegion;
+
+		borderSprite = new Sprite2D();
+        borderSprite.Texture = CardFace.Texture;
+        borderSprite.SelfModulate = new Color(0, 0, 0); // Black color
+        borderSprite.Scale = new Vector2(1.05f, 1.05f); // Slightly larger scale
+		borderSprite.RegionEnabled = true;
+		borderSprite.RegionRect = faceRegion;
+        borderSprite.ZIndex = -1; // Ensure it's rendered behind
+		borderSprite.Position = CardFace.Position;
+		borderSprite.ZAsRelative = true;
+        AddChild(borderSprite);
+
 	}
 
 	// Called when the node enters the scene tree for the first time.

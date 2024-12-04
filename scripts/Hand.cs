@@ -42,7 +42,6 @@ public partial class Hand : Node2D
 		RotationCurve.AddPoint(new Vector2(0.5f, 0)); // Middle card
 		RotationCurve.AddPoint(new Vector2(1, 25)); // Right-most card
 
-		
 	}
 
 	public void DrawCard(){
@@ -81,7 +80,7 @@ public partial class Hand : Node2D
 			
 			card.HandPosition = newPositionData.newPosition;
 			card.HandRotation = newPositionData.targetRotation;
-			card.ZIndex = i;
+			card.ZIndex = i + 1;
 
 			AnimateCardPosition(card, newPositionData.newPosition, newPositionData.targetRotation);
 		}
