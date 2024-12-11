@@ -3,13 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Security.Cryptography.X509Certificates;
 
 public partial class GameManager : Node
 {
-	private readonly Dictionary<GameState, IGameState> _stateMap;
+	private Dictionary<GameState, IGameState> _stateMap;
 	private WebRtcClient _webRtcClient;
 	private NetworkUi _networkUi;
 	private CardManager _cardManager;
+
+	private Button _passButton;
 
 	public List<Hand> _hands = new();
 
@@ -21,8 +24,14 @@ public partial class GameManager : Node
 		return Multiplayer.GetUniqueId() == 1;
 	}
 
+	private PassPhase _currentPassPhase = PassPhase.Left;
+
+	public PassPhase CurrentPassPhase => _currentPassPhase;
+	public void SetPassPhase(PassPhase passPhase) => _currentPassPhase = passPhase;
+
 	public GameManager()
 	{
+		/*
 		_stateMap = new Dictionary<GameState, IGameState>
 		{
 			{ GameState.WaitingForPlayers, new WaitingForPlayersState(this) },
@@ -33,11 +42,23 @@ public partial class GameManager : Node
 			{ GameState.PickingModifiers, new PickingModifiersState(this) },
 			{ GameState.GameOver, new GameOverState(this) }
 		};
+		*/
 	}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_stateMap = new Dictionary<GameState, IGameState>
+		{
+			{ GameState.WaitingForPlayers, (IGameState)GetNode<Node>("WaitingForPlayers") },
+			{ GameState.DealingCards, (IGameState)GetNode<Node>("DealingCards") },
+			{ GameState.PassingCards, (IGameState)GetNode<Node>("PassingCards") },
+			{ GameState.PlayingTricks, (IGameState)GetNode<Node>("PlayingTricks") },
+			{ GameState.ScoringRound, (IGameState)GetNode<Node>("ScoringRound") },
+			{ GameState.PickingModifiers, (IGameState)GetNode<Node>("PickingModifiers") },
+			{ GameState.GameOver, (IGameState)GetNode<Node>("GameOver") }
+		};
+
 		_webRtcClient = GetParent().GetNode<WebRtcClient>("WebRTCClient");
 		_networkUi = GetParent().GetNode<NetworkUi>("NetworkUI");
 		_hands.Add(GetParent().GetNode<Hand>("Hand"));
@@ -45,9 +66,11 @@ public partial class GameManager : Node
 		_hands.Add(GetParent().GetNode<Hand>("Player3Hand"));
 		_hands.Add(GetParent().GetNode<Hand>("Player4Hand"));
 
+		_passButton = GetParent().GetNode<Button>("Temp/ReadyToPass");
+
 		_deck = GetParent().GetNode<Deck>("Deck");
 		_cardManager = GetParent().GetNode<CardManager>("CardManager");
-		_cardManager.CardClicked += OnCardClicked;
+		//_cardManager.CardClicked += OnCardClicked;
 
 		_currentState = _stateMap[GameState.WaitingForPlayers];
 		_currentState.Enter();
@@ -117,20 +140,18 @@ public partial class GameManager : Node
 		return _networkUi.IsReadyToStart;
 	}
 
+	
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
 	public void CardClicked(string cardName, bool isSelected, int peerId){
 		//TODO: Figure this out.
-		GD.Print($"Card {cardName} clicked by peer {peerId}");
-		_cardManager.selectCard(cardName, isSelected);
-		
+		GD.Print($"Card {cardName} clicked by peer {peerId} in gamemanager");
+		_cardManager.selectCard(cardName, isSelected);		
 	}
 
 	private void OnCardClicked(Card card)
 	{
 		GD.Print($"Reporting Card {card.Name} clicked");
 		Rpc(MethodName.CardClicked, card.Name, !card.isSelected, Multiplayer.GetUniqueId());		
-
-		
 	}
 
 	private IGameState _currentState;
@@ -138,8 +159,8 @@ public partial class GameManager : Node
     public IGameState CurrentState => _currentState;
 
 }
-
-public class WaitingForPlayersState : IGameState
+/*
+public partial class WaitingForPlayersState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -149,20 +170,20 @@ public class WaitingForPlayersState : IGameState
 			
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		_gameManager.ConnectToServer();
 		
 		Console.WriteLine("Entering WaitingForPlayers state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		Console.WriteLine("Executing WaitingForPlayers state...");
 		// Add logic for waiting for players to join.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		_gameManager.peerId_PlayOrder.Add(_gameManager.Multiplayer.GetUniqueId());
 		_gameManager.peerId_PlayOrder.AddRange(_gameManager.Multiplayer.GetPeers());
@@ -170,15 +191,16 @@ public class WaitingForPlayersState : IGameState
 		Console.WriteLine("Exiting WaitingForPlayers state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		if(_gameManager.IsReadyToStart()) {return GameState.DealingCards; }
 		
 		return null;
 	}
 }
-
-public class DealingCardsState : IGameState
+*/
+/*
+public partial class DealingCardsState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -187,7 +209,7 @@ public class DealingCardsState : IGameState
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		if(_gameManager.isAuthority()){
 			_gameManager.AssignHands(_gameManager.peerId_PlayOrder);
@@ -196,7 +218,7 @@ public class DealingCardsState : IGameState
 		Console.WriteLine("Entering DealingCards state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		if(_gameManager._deck is null){
 			Console.WriteLine("Deck is null");
@@ -214,12 +236,12 @@ public class DealingCardsState : IGameState
 		// Add logic for dealing cards to players.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting DealingCards state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		if(_gameManager._deck.IsEmpty())
 		{
@@ -230,50 +252,84 @@ public class DealingCardsState : IGameState
 	}
 }
 
-public class PassingCardsState : IGameState
+
+public partial class PassingCardsState : IGameState
 {
 	private readonly GameManager _gameManager;
 	private CardManager _cardManager;
+	private Button _passButton;
 
 	public PassingCardsState(GameManager gameManager)
 	{
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
-		_cardManager = _gameManager.GetParent().GetNode<CardManager>("CardManager");
 		Console.WriteLine("Entering PassingCards state...");
+		_cardManager = _gameManager.GetParent().GetNode<CardManager>("CardManager");
+		_passButton = _gameManager.GetParent().GetNode<Button>("Temp/ReadyToPass");
 		_cardManager.CardClicked += (Card card) =>  OnCardClicked(card);
+		
+		_passButton.Pressed += () => OnPassButtonClicked();
+		_passButton.Disabled = true;
+		_passButton.Text = $"Pass {_gameManager.CurrentPassPhase}";
+		
+		if(_gameManager.CurrentPassPhase != PassPhase.None){
+			_passButton.Visible = true;
+		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+	public void CardClicked(string cardName, bool isSelected, int peerId){
+		//TODO: Figure this out.
+		GD.Print($"Card {cardName} clicked by peer {peerId} in pass state");
+		_cardManager.selectCard(cardName, isSelected);		
 	}
 
 	private void OnCardClicked(Card card)
 	{
+		GD.Print($"Reporting Card {card.Name} clicked from State");
+		Rpc(MethodName.CardClicked, card.Name, !card.isSelected, Multiplayer.GetUniqueId());		
+	}
+
+	private void OnPassButtonClicked()
+	{
 		
-		//Select the card to be passed and highlight it if 3 cards selected then pass and mark as passed
 		// Add logic for passing cards between players.
 	}
 
-	public void Execute()
+	
+	public override void Execute()
 	{
 		Console.WriteLine("Executing PassingCards state...");
 		// Add logic for passing cards between players.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting PassingCards state...");
 		_cardManager.CardClicked -= (Card card) =>  OnCardClicked(card);
+		_passButton.Pressed -= () => OnPassButtonClicked();
+		_passButton.Visible = false;
+		
+		var passPhases = Enum.GetValues(typeof(PassPhase)).Cast<PassPhase>().ToList();
+		int currentIndex = passPhases.IndexOf(_gameManager.CurrentPassPhase);
+		int nextIndex = (currentIndex + 1) % passPhases.Count;
+		_gameManager.SetPassPhase(passPhases[nextIndex]);
+
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		//Once all players have passed cards then move to the next state
+
+
 		return null;
 	}
 }
 
-public class PlayingTricksState : IGameState
+public partial class PlayingTricksState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -282,30 +338,30 @@ public class PlayingTricksState : IGameState
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		Console.WriteLine("Entering PlayingTricks state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		Console.WriteLine("Executing PlayingTricks state...");
 		// Add logic for playing tricks in the game.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting PlayingTricks state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		// Add logic to check for transition conditions.
 		return null;
 	}
 }
 
-public class ScoringRoundState : IGameState
+public partial class ScoringRoundState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -314,30 +370,30 @@ public class ScoringRoundState : IGameState
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		Console.WriteLine("Entering ScoringRound state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		Console.WriteLine("Executing ScoringRound state...");
 		// Add logic for scoring the round.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting ScoringRound state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		// Add logic to check for transition conditions.
 		return null;
 	}
 }
 
-public class PickingModifiersState : IGameState
+public partial class PickingModifiersState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -346,30 +402,30 @@ public class PickingModifiersState : IGameState
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		Console.WriteLine("Entering PickingModifiers state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		Console.WriteLine("Executing PickingModifiers state...");
 		// Add logic for picking modifiers for the game.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting PickingModifiers state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		// Add logic to check for transition conditions.
 		return null;
 	}
 }
 
-public class GameOverState : IGameState
+public partial class GameOverState : IGameState
 {
 	private readonly GameManager _gameManager;
 
@@ -378,33 +434,26 @@ public class GameOverState : IGameState
 		_gameManager = gameManager;
 	}
 
-	public void Enter()
+	public override void Enter()
 	{
 		Console.WriteLine("Entering GameOver state...");
 	}
 
-	public void Execute()
+	public override void Execute()
 	{
 		Console.WriteLine("Executing GameOver state...");
 		// Add logic for ending the game.
 	}
 
-	public void Exit()
+	public override void Exit()
 	{
 		Console.WriteLine("Exiting GameOver state...");
 	}
 
-	public GameState? CheckForTransition()
+	public override GameState? CheckForTransition()
 	{
 		// Add logic to check for transition conditions.
 		return null;
 	}
 }
-
-public enum PassPhase
-{
-	Left,
-	Right,
-	Across,
-	None
-}
+*/

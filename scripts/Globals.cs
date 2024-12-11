@@ -44,9 +44,10 @@ public enum GameState
     GameOver
 }
 
-public interface IGameState{
-	void Enter();
-	void Execute();
-	void Exit();
-	GameState? CheckForTransition();
+public enum PassPhase
+{
+	Left,
+	Right,
+	Across,
+	None
 }

@@ -29,6 +29,10 @@ public partial class Hand : Node2D
 
 	private Deck deck;
 
+	public bool isReadyToPass = false;
+
+	//TODO: set up a button to signify pass is ready. only enable when 3 cards are selected. and then inform the server that the player is ready to pass.
+
 	public override void _Ready()
 	{
 		centerScreenX = (int)GetViewport().GetVisibleRect().Size.X / 2;

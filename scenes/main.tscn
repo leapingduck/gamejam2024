@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c4yws1b6launf"]
+[gd_scene load_steps=16 format=3 uid="uid://c4yws1b6launf"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_q66b3"]
 [ext_resource type="Script" path="res://scripts/Hand.cs" id="2_hwog3"]
@@ -7,6 +7,13 @@
 [ext_resource type="Script" path="res://scripts/WebRtcClient.cs" id="5_d478r"]
 [ext_resource type="Script" path="res://scripts/GameManager.cs" id="5_oq6i4"]
 [ext_resource type="PackedScene" uid="uid://54ptddr0t8eb" path="res://scenes/network_ui.tscn" id="6_ybu7p"]
+[ext_resource type="Script" path="res://scripts/WaitingForPlayersState.cs" id="8_w7fl8"]
+[ext_resource type="Script" path="res://scripts/DealingCardsState.cs" id="9_jcman"]
+[ext_resource type="Script" path="res://scripts/PassingCardsState.cs" id="10_3cm5p"]
+[ext_resource type="Script" path="res://scripts/PlayingTricksState.cs" id="11_tplhk"]
+[ext_resource type="Script" path="res://scripts/ScoringRoundState.cs" id="12_c7na8"]
+[ext_resource type="Script" path="res://scripts/PickingModifiersState.cs" id="13_f11y2"]
+[ext_resource type="Script" path="res://scripts/GameOverState.cs" id="14_000df"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dixya"]
 size = Vector2(649, 457.375)
@@ -86,6 +93,14 @@ offset_right = 561.0
 offset_bottom = 670.0
 text = "Reset"
 
+[node name="ReadyToPass" type="Button" parent="Temp"]
+offset_left = 1280.0
+offset_top = 800.0
+offset_right = 1455.0
+offset_bottom = 875.0
+tooltip_text = "Click to pass cards"
+text = "Pass"
+
 [node name="WebRTCClient" type="Node" parent="."]
 script = ExtResource("5_d478r")
 
@@ -95,6 +110,34 @@ layout_mode = 1
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("5_oq6i4")
+
+[node name="WaitingForPlayers" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("8_w7fl8")
+_gameManager = NodePath("..")
+
+[node name="DealingCards" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("9_jcman")
+_gameManager = NodePath("..")
+
+[node name="PassingCards" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("10_3cm5p")
+_gameManager = NodePath("..")
+
+[node name="PlayingTricks" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("11_tplhk")
+_gameManager = NodePath("..")
+
+[node name="ScoringRound" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("12_c7na8")
+_gameManager = NodePath("..")
+
+[node name="PickingModifiers" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("13_f11y2")
+_gameManager = NodePath("..")
+
+[node name="GameOver" type="Node" parent="GameManager" node_paths=PackedStringArray("_gameManager")]
+script = ExtResource("14_000df")
+_gameManager = NodePath("..")
 
 [connection signal="pressed" from="Temp/Discard" to="." method="OnDiscardCardButtonPressed"]
 [connection signal="pressed" from="Temp/Reset" to="." method="OnResetButtonPressed"]
