@@ -3,10 +3,12 @@ using System;
 
 public partial class WaitingForPlayersState : IGameState
 {
-	
+	private NetworkUi _networkUi;
+
 	public override void Enter()
 	{
-		_gameManager.ConnectToServer();
+		_networkUi = _gameManager.GetParent().GetNode<NetworkUi>("NetworkUi");
+		_networkUi.Visible = true;
 		
 		Console.WriteLine("Entering WaitingForPlayers state...");
 	}
@@ -19,15 +21,15 @@ public partial class WaitingForPlayersState : IGameState
 
 	public override void Exit()
 	{
-		_gameManager.peerId_PlayOrder.Add(_gameManager.Multiplayer.GetUniqueId());
-		_gameManager.peerId_PlayOrder.AddRange(_gameManager.Multiplayer.GetPeers());
-		_gameManager.HideNetworkUi();
+		_gameManager.peerId_PlayOrder.Add(Multiplayer.GetUniqueId());
+		_gameManager.peerId_PlayOrder.AddRange(Multiplayer.GetPeers());
+		_networkUi.Visible = false;
 		Console.WriteLine("Exiting WaitingForPlayers state...");
 	}
 
 	public override GameState? CheckForTransition()
 	{
-		if(_gameManager.IsReadyToStart()) {return GameState.DealingCards; }
+		if(_networkUi.IsReadyToStart) {return GameState.DealingCards; }
 		
 		return null;
 	}

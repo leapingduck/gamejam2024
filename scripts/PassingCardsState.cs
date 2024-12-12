@@ -9,12 +9,14 @@ public partial class PassingCardsState : IGameState
 	private CardManager _cardManager;
 	private Button _passButton;
 
+	private Dictionary<int, bool> _playerPassStatus = new Dictionary<int, bool>();
+
 	public override void Enter()
 	{
 		Console.WriteLine("Entering PassingCards state...");
 		_cardManager = _gameManager.GetParent().GetNode<CardManager>("CardManager");
 		_passButton = _gameManager.GetParent().GetNode<Button>("Temp/ReadyToPass");
-		_cardManager.CardClicked += (Card card) =>  OnCardClicked(card);
+		_cardManager.CardClicked += (Card card) => OnCardClicked(card);
 		
 		_passButton.Pressed += () => OnPassButtonClicked();
 		_passButton.Disabled = true;
@@ -23,6 +25,10 @@ public partial class PassingCardsState : IGameState
 		if(_gameManager.CurrentPassPhase != PassPhase.None){
 			_passButton.Visible = true;
 		}
+		foreach(var peerId in _gameManager.peerId_PlayOrder){
+			_playerPassStatus.Add(peerId, false);
+		}
+
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
@@ -38,6 +44,16 @@ public partial class PassingCardsState : IGameState
 		Rpc(MethodName.CardClicked, card.Name, !card.isSelected, Multiplayer.GetUniqueId());		
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+	public void NotifyClicked(bool isReadyToPass, int peerId){
+		_playerPassStatus[peerId] = isReadyToPass;
+		/*
+		if(_playerPassStatus.Values.All(x => x)){
+			_passButton.Disabled = false;
+		}
+		*/
+	}
+
 	private void OnPassButtonClicked()
 	{
 		
@@ -47,8 +63,11 @@ public partial class PassingCardsState : IGameState
 	
 	public override void Execute()
 	{
+		if(_playerPassStatus.Values.All(x => x == true)){
+			//TODO: Do the card passing here.
+		}
 		Console.WriteLine("Executing PassingCards state...");
-		// Add logic for passing cards between players.
+		
 	}
 
 	public override void Exit()
@@ -67,9 +86,6 @@ public partial class PassingCardsState : IGameState
 
 	public override GameState? CheckForTransition()
 	{
-		//Once all players have passed cards then move to the next state
-
-
-		return null;
+		return _playerPassStatus.Values.All(x => x == true) ? GameState.PlayingTricks : null;
 	}
 }
