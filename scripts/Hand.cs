@@ -29,17 +29,19 @@ public partial class Hand : Node2D
 
 	private Deck deck;
 
-	public bool isReadyToPass = false;
+	private CardManager cardManager;
 
-	//TODO: set up a button to signify pass is ready. only enable when 3 cards are selected. and then inform the server that the player is ready to pass.
+	public bool isReadyToPass = false;
 
 	public override void _Ready()
 	{
 		centerScreenX = (int)GetViewport().GetVisibleRect().Size.X / 2;
 		
 		deck = GetParent().GetNode<Deck>("Deck");
+		cardManager = GetParent().GetNode<CardManager>("CardManager");
 
 		deck.OnDealCard += AddCardToHand;
+		cardManager.CardPassed += OnCardPassed;
 		
 		RotationCurve = new Curve();
 		RotationCurve.AddPoint(new Vector2(0, -25)); // Left-most card
@@ -50,6 +52,14 @@ public partial class Hand : Node2D
 
 	public void DrawCard(){
 		var card = deck.DrawCard();
+		AddCardToHand(card);
+	}
+
+	//TODO: maybe look at merging OnCardPassed method with AddCardToHand method, since they're the same.
+
+	private void OnCardPassed(Card card, int targetPlayerId){
+		if(targetPlayerId != PlayerID) return;
+
 		AddCardToHand(card);
 	}
 
@@ -66,12 +76,19 @@ public partial class Hand : Node2D
 		if(!Cards.Contains(card)){
 			card.SetHand(this);
 			Cards.Add(card);
-			UpdateHandPosition();
+			if(card.isFaceUp){
+				card.GetNode<AnimationPlayer>("AnimationPlayer").PlayBackwards("card_flip");
+			}
+			UpdateHandPosition();			
 			if(isLocalPlayer){
 				card.GetNode<AnimationPlayer>("AnimationPlayer").Play("card_flip");
 			}
+			card.isSelected = false;
 		}
 		else {
+			if(card.isFaceUp){
+				card.GetNode<AnimationPlayer>("AnimationPlayer").PlayBackwards("card_flip");
+			}
 			AnimateCardPosition(card, card.HandPosition, card.HandRotation);
 		}
 	}

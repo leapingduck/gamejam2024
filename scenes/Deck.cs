@@ -75,7 +75,6 @@ public partial class Deck : Node2D
 	public void DealCard(Hand hand){
 		Card card = cards[0];// DrawCard();
 		Rpc(MethodName.DealCard, hand.PlayerID, card.Name);
-		//DealCard(hand.PlayerID, card.Name);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]

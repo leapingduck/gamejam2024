@@ -17,6 +17,8 @@ public partial class Card : Node2D
 
 	public bool isSelected = false;
 
+	public bool isFaceUp => CardFace.Visible;
+
 	public void SetHand(Hand hand){ _currentHand = hand; }
 
  	public void Initialize(Suit suit, Rank rank, Rect2 faceRegion, Rect2 backRegion)

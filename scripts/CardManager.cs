@@ -13,6 +13,8 @@ public partial class CardManager : Node2D
 	[Signal]
 	public delegate void CardDoubleClickedEventHandler(Card card);
 
+	[Signal]
+	public delegate void CardPassedEventHandler(Card card, int targetPlayerId);
 
 	Rect2 ScreenSize;
 	Card CardBeingDragged = null;
@@ -260,6 +262,16 @@ public partial class CardManager : Node2D
 			}
 			card.ZIndex = card.CurrentHand.Cards.IndexOf(card) + 1;
 		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	public void PassCardToPlayer(string cardName, int targetPlayerId){
+		var card = GetNode<Card>(cardName);
+		EmitSignal(SignalName.CardPassed, card, targetPlayerId);
+	}
+
+	public void CallPassCardToPlayer(string CardName, int targetPlayerId){
+		Rpc(MethodName.PassCardToPlayer, CardName, targetPlayerId);
 	}
 
 }
