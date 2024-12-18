@@ -7,7 +7,7 @@ public partial class WaitingForPlayersState : IGameState
 
 	public override void Enter()
 	{
-		_networkUi = _gameManager.GetParent().GetNode<NetworkUi>("NetworkUi");
+		_networkUi = _gameManager.GetParent().GetNode<NetworkUi>("NetworkUI");
 		_networkUi.Visible = true;
 		
 		Console.WriteLine("Entering WaitingForPlayers state...");
