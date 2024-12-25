@@ -26,33 +26,44 @@ offset_bottom = 455.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Connect to:"
+
+[node name="Host" type="LineEdit" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "ws://localhost:8888"
+expand_to_text_length = true
+
 [node name="Connect" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/Connect"]
 layout_mode = 2
-text = "Connect to:"
+theme_override_font_sizes/font_size = 35
+text = "Name:"
 
-[node name="Host" type="LineEdit" parent="VBoxContainer/Connect"]
+[node name="PlayerName" type="LineEdit" parent="VBoxContainer/Connect"]
 layout_mode = 2
-text = "ws://localhost:8888"
+theme_override_font_sizes/font_size = 35
+placeholder_text = "Player name"
 expand_to_text_length = true
 
 [node name="Room" type="Label" parent="VBoxContainer/Connect"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Room :"
 
 [node name="RoomSecret" type="LineEdit" parent="VBoxContainer/Connect"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 35
 placeholder_text = "Room code"
 expand_to_text_length = true
-
-[node name="Mesh" type="CheckBox" parent="VBoxContainer/Connect"]
-layout_mode = 2
-button_pressed = true
-text = "Mesh"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -60,20 +71,30 @@ alignment = 1
 
 [node name="Start" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Join Room"
+theme_override_font_sizes/font_size = 35
+text = "Start/Join Room"
 
 [node name="Stop" type="Button" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Disconnect"
 
 [node name="Seal" type="Button" parent="VBoxContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Close Room
 "
 
-[node name="StartGame" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StartGame" type="Button" parent="VBoxContainer/HBoxContainer2"]
 visible = false
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Start Game"
 
 [node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
@@ -85,4 +106,4 @@ script = ExtResource("2_fpg26")
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Start" to="." method="OnStartPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Stop" to="." method="OnStopPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/StartGame" to="." method="OnStartGamePressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/StartGame" to="." method="OnStartGamePressed"]

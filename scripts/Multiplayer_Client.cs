@@ -158,6 +158,7 @@ public partial class Multiplayer_Client : WebRtcClient
 
     private void OnPeerDisconnected(int id)
     {
+        //Remove the peer or end game if peer id == 1
         if (rtcMp.HasPeer(id))
         {
             rtcMp.RemovePeer(id);

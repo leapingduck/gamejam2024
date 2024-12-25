@@ -4,13 +4,14 @@ using System;
 public partial class NetworkUi : Control
 {
 	private Multiplayer_Client Client => (Multiplayer_Client)GetNode<Node>("Client");
-    private LineEdit Host => GetNode<LineEdit>("VBoxContainer/Connect/Host");
+    private LineEdit Host => GetNode<LineEdit>("VBoxContainer/HBoxContainer3/Host");
+    private LineEdit PlaryerName => GetNode<LineEdit>("VBoxContainer/Connect/PlayerName");
     private LineEdit Room => GetNode<LineEdit>("VBoxContainer/Connect/RoomSecret");
-    private CheckBox Mesh => GetNode<CheckBox>("VBoxContainer/Connect/Mesh");
 
-	private Button StartBtn => GetNode<Button>("VBoxContainer/Connect/Start");
-	private Button StopBtn => GetNode<Button>("VBoxContainer/Connect/Stop");
-	private Button StartGameBtn => GetNode<Button>("VBoxContainer/HBoxContainer/StartGame");
+	private Button StartBtn => GetNode<Button>("VBoxContainer/HBoxContainer/Start");
+	private Button StopBtn => GetNode<Button>("VBoxContainer/HBoxContainer/Stop");
+    private Button SealBtn => GetNode<Button>("VBoxContainer/HBoxContainer/Seal");
+	private Button StartGameBtn => GetNode<Button>("VBoxContainer/HBoxContainer2/StartGame");
 
     [Export]
     public bool IsReadyToStart { get; private set; } = false;
@@ -55,6 +56,7 @@ public partial class NetworkUi : Control
         
         if (Client.isAuthority()){
             StartGameBtn.Visible = true;
+            SealBtn.Visible = true;
         }
 
     }
@@ -76,6 +78,7 @@ public partial class NetworkUi : Control
 
     private void OnLobbyJoined(string lobby)
     {
+        StopBtn.Visible = true;
         Log($"[Signaling] Joined lobby {lobby}");
     }
 
@@ -105,12 +108,13 @@ public partial class NetworkUi : Control
 
     private void OnSealPressed()
     {
+        //TDOD: Make this a toggle button.
         Client.SealLobby();
     }
 
     private void OnStartPressed()
     {
-        Client.Call("Start", Host.Text, Room.Text, Mesh.ButtonPressed);
+        Client.Call("Start", Host.Text, Room.Text, true);
     }
     
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
