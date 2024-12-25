@@ -14,7 +14,7 @@ public partial class CardManager : Node2D
 	public delegate void CardDoubleClickedEventHandler(Card card);
 
 	[Signal]
-	public delegate void CardPassedEventHandler(Card card, int targetPlayerId);
+	public delegate void CardPassedEventHandler(int targetPlayerId, Card card);
 
 	Rect2 ScreenSize;
 	Card CardBeingDragged = null;

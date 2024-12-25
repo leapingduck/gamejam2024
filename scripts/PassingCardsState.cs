@@ -66,7 +66,7 @@ public partial class PassingCardsState : IGameState
 		// Add logic for passing cards between players.
 	}
 
-	
+	//Find out why passing isn't appearing to work
 	public override void Execute()
 	{
 		if(Multiplayer.GetUniqueId() == 1){
@@ -81,7 +81,7 @@ public partial class PassingCardsState : IGameState
 					});
 				});
 				isPassing = false;
-				passComplete = true;
+				Rpc(MethodName.completePhase);
 			}
 		}
 	}
@@ -91,11 +91,17 @@ public partial class PassingCardsState : IGameState
 		int nextIndexSeed = _gameManager.CurrentPassPhase switch {
 			PassPhase.Left => index + 1,
 			PassPhase.Right => index - 1,
-			PassPhase.Across => index + 2,
+			PassPhase.Across => _gameManager.peerId_PlayOrder.Count == 4 ? index + 2 : index + 1,
 			_ => index
 		};
 		int nextIndex = nextIndexSeed % _gameManager.peerId_PlayOrder.Count;
 		return _gameManager.peerId_PlayOrder[nextIndex];
+	}
+
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+	private void completePhase(){
+		passComplete = true;
 	}
 
 	public override void Exit()
@@ -110,7 +116,6 @@ public partial class PassingCardsState : IGameState
 		int currentIndex = passPhases.IndexOf(_gameManager.CurrentPassPhase);
 		int nextIndex = (currentIndex + 1) % passPhases.Count;
 		_gameManager.SetPassPhase(passPhases[nextIndex]);
-
 	}
 
 	public override GameState? CheckForTransition()

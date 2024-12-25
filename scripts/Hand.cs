@@ -41,7 +41,7 @@ public partial class Hand : Node2D
 		cardManager = GetParent().GetNode<CardManager>("CardManager");
 
 		deck.OnDealCard += AddCardToHand;
-		cardManager.CardPassed += OnCardPassed;
+		cardManager.CardPassed += AddCardToHand;
 		
 		RotationCurve = new Curve();
 		RotationCurve.AddPoint(new Vector2(0, -25)); // Left-most card
@@ -52,14 +52,6 @@ public partial class Hand : Node2D
 
 	public void DrawCard(){
 		var card = deck.DrawCard();
-		AddCardToHand(card);
-	}
-
-	//TODO: maybe look at merging OnCardPassed method with AddCardToHand method, since they're the same.
-
-	private void OnCardPassed(Card card, int targetPlayerId){
-		if(targetPlayerId != PlayerID) return;
-
 		AddCardToHand(card);
 	}
 
@@ -74,6 +66,11 @@ public partial class Hand : Node2D
 		if(card is null) return;
 
 		if(!Cards.Contains(card)){
+			
+			if(card.CurrentHand is not null){
+				card.CurrentHand.RemoveCardFromHand(card);
+			}
+			
 			card.SetHand(this);
 			Cards.Add(card);
 			if(card.isFaceUp){
