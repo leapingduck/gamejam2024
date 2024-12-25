@@ -1,0 +1,14 @@
+/Users/andrewweller/source/repos/gameJamWebRTCServer/bin/Debug/net8.0/gameJamWebRTCServer
+/Users/andrewweller/source/repos/gameJamWebRTCServer/bin/Debug/net8.0/gameJamWebRTCServer.deps.json
+/Users/andrewweller/source/repos/gameJamWebRTCServer/bin/Debug/net8.0/gameJamWebRTCServer.runtimeconfig.json
+/Users/andrewweller/source/repos/gameJamWebRTCServer/bin/Debug/net8.0/gameJamWebRTCServer.dll
+/Users/andrewweller/source/repos/gameJamWebRTCServer/bin/Debug/net8.0/gameJamWebRTCServer.pdb
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.AssemblyInfoInputs.cache
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.AssemblyInfo.cs
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.csproj.CoreCompileInputs.cache
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.dll
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/refint/gameJamWebRTCServer.dll
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.pdb
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/gameJamWebRTCServer.genruntimeconfig.cache
+/Users/andrewweller/source/repos/gameJamWebRTCServer/obj/Debug/net8.0/ref/gameJamWebRTCServer.dll
