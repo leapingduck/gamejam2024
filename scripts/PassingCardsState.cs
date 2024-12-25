@@ -75,7 +75,8 @@ public partial class PassingCardsState : IGameState
 				isPassing = true;
 
 				_gameManager._hands.ForEach(hand => {
-					hand.Cards.Where(x => x.isSelected).ToList().ForEach(card => { 
+					var selectedCards = hand.Cards.Where(x => x.isSelected).ToList();
+					selectedCards.ForEach(card => {
 						int targetPlayerId = PlayerIdToPassTo(hand.PlayerID);
 						_cardManager.CallPassCardToPlayer(card.Name, targetPlayerId);
 					});

@@ -267,7 +267,7 @@ public partial class CardManager : Node2D
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
 	public void PassCardToPlayer(string cardName, int targetPlayerId){
 		var card = GetNode<Card>(cardName);
-		EmitSignal(SignalName.CardPassed, card, targetPlayerId);
+		EmitSignal(SignalName.CardPassed, targetPlayerId, card);
 	}
 
 	public void CallPassCardToPlayer(string CardName, int targetPlayerId){
