@@ -29,7 +29,7 @@ public partial class Hand : Node2D
 
 	private Deck deck;
 
-	private CardManager cardManager;
+	private CardManager _cardManager;
 
 	public bool isReadyToPass = false;
 
@@ -38,10 +38,10 @@ public partial class Hand : Node2D
 		centerScreenX = (int)GetViewport().GetVisibleRect().Size.X / 2;
 		
 		deck = GetParent().GetNode<Deck>("Deck");
-		cardManager = GetParent().GetNode<CardManager>("CardManager");
+		_cardManager = GetParent().GetNode<CardManager>("CardManager");
 
 		deck.OnDealCard += AddCardToHand;
-		cardManager.CardPassed += AddCardToHand;
+		_cardManager.CardPassed += AddCardToHand;
 		
 		RotationCurve = new Curve();
 		RotationCurve.AddPoint(new Vector2(0, -25)); // Left-most card
@@ -66,7 +66,7 @@ public partial class Hand : Node2D
 		if(card is null) return;
 
 		if(!Cards.Contains(card)){
-			
+			_cardManager.selectCard(card.Name, false);
 			if(card.CurrentHand is not null){
 				card.CurrentHand.RemoveCardFromHand(card);
 			}

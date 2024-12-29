@@ -79,6 +79,7 @@ public partial class NetworkUi : Control
     private void OnLobbyJoined(string lobby)
     {
         StopBtn.Visible = true;
+        Room.Text = lobby;
         Log($"[Signaling] Joined lobby {lobby}");
     }
 
